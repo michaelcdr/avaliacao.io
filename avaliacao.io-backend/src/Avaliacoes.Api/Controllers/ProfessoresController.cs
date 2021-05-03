@@ -42,7 +42,8 @@ namespace Avaliacoes.Api.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            return Ok(await _uow.Disciplinas.Get(id));
+            var usuario = await _uow.Usuarios.Get(id);
+            return Ok();
         }
 
         [HttpPost]
