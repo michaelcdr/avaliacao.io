@@ -1,0 +1,48 @@
+﻿using avaliacao.io.mvc.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
+
+namespace avaliacao.io.mvc.Controllers
+{
+    public class HomeController : Controller
+    {
+        private readonly ILogger<HomeController> _logger;
+
+        public HomeController(ILogger<HomeController> logger)
+        {
+            _logger = logger;
+        }
+
+        public async Task<IActionResult> Index(int id)
+        {
+
+            await Delete(id);
+
+            return View();
+        }
+
+        public async Task Delete(int id)
+        {
+            var httpCli = new HttpClient();
+
+            var retorno = await httpCli.DeleteAsync($"https://localhost:44311/api/disciplinas/{id}");
+        }
+
+        public IActionResult Privacy()
+        {
+            return View();
+        }
+
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult Error()
+        {
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+    }
+}
