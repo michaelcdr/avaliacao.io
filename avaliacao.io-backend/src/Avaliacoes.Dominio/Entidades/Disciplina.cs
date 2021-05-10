@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Avaliacoes.Dominio.Entidades
@@ -27,6 +28,25 @@ namespace Avaliacoes.Dominio.Entidades
         {
             this.Nome = nome;
             this.Descritivo = descritivo;
+        }
+
+        public void VincularProfessores(List<Professor> professores)
+        {
+            if (this.Professores == null)
+                this.Professores = new List<Professor>();
+
+            foreach (var professor in professores)
+            {
+                this.Professores.Add(professor);
+            }
+        }
+
+        public void VincularProfessor(Professor professor)
+        {
+            if (this.Professores == null)
+                this.Professores = new List<Professor>();
+
+            this.Professores.Add(professor);
         }
     }
 }

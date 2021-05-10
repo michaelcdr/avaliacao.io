@@ -6,6 +6,7 @@ namespace Avaliacoes.Dominio.Repositorios
 {
     public interface IUsuariosRepositorio : IRepositorio<Usuario>
     {
+        Task<Professor> ObterProfessor(int id);
         Task<List<Usuario>> ObterProfessores();
     }
 }

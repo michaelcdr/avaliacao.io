@@ -1,11 +1,8 @@
-﻿using Avaliacoes.Dominio.DTOs;
-using Avaliacoes.Dominio.Entidades;
+﻿using Avaliacoes.Dominio.Entidades;
+using Avaliacoes.Dominio.Requests;
 using Avaliacoes.Dominio.Transacoes;
-using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Avaliacoes.Api.Controllers
@@ -39,28 +36,33 @@ namespace Avaliacoes.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Post([FromBody] DisciplinaDTO disciplinaDto)
+        public async Task<ActionResult> Post([FromBody] DisciplinaRequest request)
         {
-            var disciplina = new Disciplina(disciplinaDto.Nome, disciplinaDto.Descritivo);
+            var disciplina = new Disciplina(request.Nome, request.Descritivo);
 
             if (ModelState.IsValid)
             {
                 _uow.Disciplinas.Add(disciplina);
                 await _uow.CommitAsync();
 
-                //var professoresInformados = _uow.Usuarios.GetAll();
-                //disciplina.VincularProfessores(disciplinaDto.Professores);
-                //await _uow.CommitAsync();
+                foreach (var professorId in request.Professores)
+                {
+                    Professor professor = await _uow.Usuarios.ObterProfessor(professorId);
+
+                    disciplina.VincularProfessor(professor);
+                }
+                
+                await _uow.CommitAsync();
 
                 var uri = Url.Action("Get", new { id = disciplina.Id });
-                return Created(uri, disciplina);
+                return Created(uri, new { Id = disciplina.Id, Nome = disciplina.Nome });
             }
             else
                 return BadRequest(new { erros = new List<string> { "Ocorreram erros de validação." } });
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] DisciplinaDTO disciplinaDTO)
+        public async Task<IActionResult> Put(int id, [FromBody] DisciplinaRequest disciplinaDTO)
         {
             Disciplina disciplina = await _uow.Disciplinas.Get(id);
 

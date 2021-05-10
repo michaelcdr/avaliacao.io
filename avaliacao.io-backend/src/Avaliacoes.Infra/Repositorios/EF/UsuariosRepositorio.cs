@@ -22,8 +22,17 @@ namespace Avaliacoes.Infra.Repositorios.EF
 
         public async Task<List<Usuario>> ObterProfessores()
         {
-            return await ApplicationDbContext.Usuarios.Where(e => e.Tipo == "Professor")
+            return await ApplicationDbContext.Usuarios
+                .Where(e => e.Tipo == "Professor")
                 .Include(e => e.Professor).ToListAsync();
+        }
+
+        public async Task<Professor> ObterProfessor(int id)
+        {
+            return await ApplicationDbContext.Usuarios.Include(usuario => usuario.Professor).ThenInclude(e=>e.Usuario)
+                .Include(e=>e.Professor).ThenInclude(p => p.Disciplinas)
+                .Where(usuario => usuario.Id == id && usuario.Tipo == "Professor").Select(usuario => usuario.Professor)
+                .SingleOrDefaultAsync();
         }
     }
 }

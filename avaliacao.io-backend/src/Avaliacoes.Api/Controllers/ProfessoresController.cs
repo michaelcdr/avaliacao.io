@@ -42,8 +42,12 @@ namespace Avaliacoes.Api.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            var usuario = await _uow.Usuarios.Get(id);
-            return Ok();
+            Professor professor = await _uow.Usuarios.ObterProfessor(id);
+
+            if (professor == null) return NotFound();
+
+            var professorComDisciplinaDTO = new ProfessorComDisciplinaDTO(professor.Usuario);
+            return Ok(professorComDisciplinaDTO);
         }
 
         [HttpPost]
