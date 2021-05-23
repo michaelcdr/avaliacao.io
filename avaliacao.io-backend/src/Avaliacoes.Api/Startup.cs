@@ -97,7 +97,7 @@ namespace Avaliacoes.Api
             IApplicationBuilder app, 
             IWebHostEnvironment env,
             UserManager<Usuario> userManager,
-            RoleManager<TipoUsuario> roleManager)
+            RoleManager<TipoUsuario> roleManager, IUsuarioService usuarioService)
         {
             if (env.IsDevelopment())
             {
@@ -118,7 +118,7 @@ namespace Avaliacoes.Api
             app.UseAuthentication();
             app.UseAuthorization();
 
-            var seedService = new SeedService(userManager, roleManager);
+            var seedService = new SeedService(userManager, roleManager, usuarioService);
             seedService.Seed().GetAwaiter().GetResult();
 
             app.UseEndpoints(endpoints =>

@@ -20,9 +20,19 @@ namespace Avaliacoes.Infra.Repositorios.EF
             get { return Context as ApplicationDbContext; }
         }
 
+        public async Task<Disciplina> ObterComProfessores(int id)
+        {
+            return await Context.Set<Disciplina>().Include(e => e.Professores).SingleOrDefaultAsync(e => e.Id == id);
+        }
+
         public async Task<List<Disciplina>> ObterTodas(List<int> disciplinas)
         {
             return await Context.Set<Disciplina>().Where(e => disciplinas.Contains(e.Id)).ToListAsync();
+        }
+
+        public async Task<List<Disciplina>> ObterTodasComProfessores()
+        {
+            return await Context.Set<Disciplina>().Include(e => e.Professores).ToListAsync();
         }
     }
 }

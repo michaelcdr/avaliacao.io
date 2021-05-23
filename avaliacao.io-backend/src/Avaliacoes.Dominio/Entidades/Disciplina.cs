@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Avaliacoes.Dominio.DTOs;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Avaliacoes.Dominio.Entidades
 {
@@ -34,6 +36,20 @@ namespace Avaliacoes.Dominio.Entidades
                 this.Professores = new List<Professor>();
 
             this.Professores.Add(professor);
+        }
+
+        public DisciplinaDTO ToDTO()
+        {
+            return new DisciplinaDTO
+            {
+                Descritivo = this.Descritivo,
+                Nome = this.Nome,
+                Horario = this.Horario,
+                Id = this.Id,
+                Professores = this.Professores == null
+                    ? new List<string>()
+                    : this.Professores.Select(e => e.UsuarioId).ToList()
+            };
         }
     }
 

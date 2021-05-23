@@ -7,5 +7,6 @@ namespace Avaliacoes.Aplicacao.Services
     public interface IUsuarioService
     {
         Task<CriarProfessorResponse> CriarProfessor(CriarProfessorRequest request);
+        Task<CriarCoordenadorResponse> CriarCoordenador(CriarCoordenadorRequest criarCoordenadorRequest);
     }
 }

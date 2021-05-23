@@ -4,19 +4,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+using Avaliacoes.Dominio.InputModels;
+
 namespace Avaliacoes.Aplicacao.Services
 {
     public class SeedService
     {
         private readonly UserManager<Usuario> _userManager;
         private readonly RoleManager<TipoUsuario> _roleManager;
+        private readonly IUsuarioService _usuarioService;
 
         public SeedService(
             UserManager<Usuario> userManager,
-            RoleManager<TipoUsuario> roleManager)
+            RoleManager<TipoUsuario> roleManager, IUsuarioService usuarioService)
         {
             _userManager = userManager;
             _roleManager = roleManager;
+            _usuarioService = usuarioService;
         }
 
         public async Task Seed()
@@ -34,27 +38,12 @@ namespace Avaliacoes.Aplicacao.Services
             IList<Usuario> alunos = await _userManager.GetUsersInRoleAsync("Aluno");
 
             if (!coordenadores.Any())
-            {
-                var usuario = new Usuario("Michael","michael", "michaelcdr@hotmail.com");
-
-                IdentityResult result = await _userManager.CreateAsync(usuario, "123456");
-
-                if (result.Succeeded)
-                    await _userManager.AddToRoleAsync(usuario, "Coordenador");
-            }
+                await _usuarioService.CriarCoordenador(new CriarCoordenadorRequest("Michael", "michael", "michaelcdr@hotmail.com", "123456"));
 
             if (!professores.Any())
             {
-                var usuario1 = new Usuario("Michael", "michael.professor", "michaelcdr@hotmail.com");
-                var usuario2 = new Usuario("Pedro", "pedro", "teste@hotmail.com");
-
-                IdentityResult result1 = await _userManager.CreateAsync(usuario1, "123456");
-                if (result1.Succeeded)
-                    await _userManager.AddToRoleAsync(usuario1, "Professor");
-                
-                IdentityResult result2 = await _userManager.CreateAsync(usuario2, "123456");
-                if (result2.Succeeded)
-                    await _userManager.AddToRoleAsync(usuario2, "Professor");
+                await _usuarioService.CriarProfessor(new CriarProfessorRequest("Michael", "michael.professor", "michaelcdr@hotmail.com", "123456"));
+                await _usuarioService.CriarProfessor(new CriarProfessorRequest("Pedro", "pedro", "teste@hotmail.com", "123456"));
             }
         }
 

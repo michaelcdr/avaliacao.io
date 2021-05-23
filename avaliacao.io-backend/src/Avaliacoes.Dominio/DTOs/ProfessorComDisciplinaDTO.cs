@@ -29,4 +29,13 @@ namespace Avaliacoes.Dominio.DTOs
                 this.Disciplinas = usuario.Professor.Disciplinas.Select(e => e.Id).ToList();
         }
     }
+
+    public class DisciplinaDTO
+    {
+        public int Id { get; set; }
+        public string Horario { get; set; }
+        public string Nome { get; set; }
+        public string Descritivo { get; set; }
+        public List<string> Professores { get; set; }
+    }
 }

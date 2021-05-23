@@ -33,12 +33,35 @@ namespace Avaliacoes.Infra.Repositorios.EF
 
         public async Task<Professor> ObterProfessor(string id)
         {
-            var usuario = await (from u in ApplicationDbContext.Usuarios
+            Usuario usuario = await Obter(id);
+            return usuario.Professor;
+        }
+
+        public async Task<List<Professor>> ObterProfessores(List<string> idsUsuarios)
+        {
+            var usuarios = await (from u in ApplicationDbContext.Usuarios
                                  join ru in ApplicationDbContext.UserRoles on u.Id equals ru.UserId
                                  join r in ApplicationDbContext.Roles on ru.RoleId equals r.Id
-                                 where r.Name == ROLENAME_PROFESSOR && u.Id == id
-                                 select u).Include(e=>e.Professor).ThenInclude(e=>e.Disciplinas).SingleOrDefaultAsync();
-            return usuario.Professor;
+                                 where r.Name == ROLENAME_PROFESSOR && idsUsuarios.Contains(u.Id)
+                                 select u).Include(e => e.Professor).ThenInclude(e => e.Disciplinas).ToListAsync();
+
+            var professores = new List<Professor>();
+
+            if (usuarios != null)
+                professores = usuarios.Select(e => e.Professor).Distinct().ToList();
+
+            return professores;
+        }
+
+        public async Task<Usuario> Obter(string usuarioId)
+        {
+            Usuario usuario = await (from u in ApplicationDbContext.Usuarios
+                                     join ru in ApplicationDbContext.UserRoles on u.Id equals ru.UserId
+                                     join r in ApplicationDbContext.Roles on ru.RoleId equals r.Id
+                                     where r.Name == ROLENAME_PROFESSOR && u.Id == usuarioId
+                                     select u).Include(e => e.Professor).ThenInclude(e => e.Disciplinas).SingleOrDefaultAsync();
+
+            return usuario;
         }
     }
 }

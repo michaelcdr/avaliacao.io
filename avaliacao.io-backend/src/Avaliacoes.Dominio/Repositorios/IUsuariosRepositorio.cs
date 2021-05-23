@@ -8,5 +8,7 @@ namespace Avaliacoes.Dominio.Repositorios
     {
         Task<Professor> ObterProfessor(string id);
         Task<List<Usuario>> ObterProfessores();
+        Task<List<Professor>> ObterProfessores(List<string> idsUsuarios);
+        Task<Usuario> Obter(string idUsuario);
     }
 }

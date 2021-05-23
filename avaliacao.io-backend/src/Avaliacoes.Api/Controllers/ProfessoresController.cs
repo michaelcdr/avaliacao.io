@@ -56,5 +56,17 @@ namespace Avaliacoes.Api.Controllers
 
             return BadRequest(response);
         }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(string id)
+        {
+            Usuario usuario = await _uow.Usuarios.Obter(id);
+
+            if (usuario == null) return NotFound();
+
+            _uow.Usuarios.Delete(usuario);
+            await _uow.CommitAsync();
+            return NoContent();
+        }
     }
 }

@@ -1,9 +1,11 @@
-﻿using Avaliacoes.Dominio.Entidades;
+﻿using Avaliacoes.Dominio.DTOs;
+using Avaliacoes.Dominio.Entidades;
 using Avaliacoes.Dominio.Requests;
 using Avaliacoes.Dominio.Transacoes;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Avaliacoes.Api.Controllers
@@ -22,18 +24,21 @@ namespace Avaliacoes.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            IList<Disciplina> disciplinas = await _uow.Disciplinas.GetAll();
-            return Ok(disciplinas);
+            IList<Disciplina> disciplinas = await _uow.Disciplinas.ObterTodasComProfessores();
+
+            List<DisciplinaDTO> disciplinasDTOs = disciplinas.Select(e => e.ToDTO()).ToList();
+
+            return Ok(disciplinasDTOs);
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult> Get(int id)
         {
-            Disciplina disciplina = await _uow.Disciplinas.Get(id);
+            Disciplina disciplina = await _uow.Disciplinas.ObterComProfessores(id);
             
             if (disciplina == null) return NotFound();
 
-            return Ok(disciplina);
+            return Ok(disciplina.ToDTO());
         }
 
         [HttpPost]
@@ -64,7 +69,7 @@ namespace Avaliacoes.Api.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] DisciplinaRequest disciplinaDTO)
         {
-            Disciplina disciplina = await _uow.Disciplinas.Get(id);
+            Disciplina disciplina = await _uow.Disciplinas.ObterComProfessores(id);
 
             if (disciplina == null) return NotFound();
 
@@ -72,11 +77,13 @@ namespace Avaliacoes.Api.Controllers
             {
                 disciplina.Descritivo = disciplinaDTO.Descritivo;
                 disciplina.Nome = disciplinaDTO.Nome;
-                await _uow.CommitAsync();
+                disciplina.Horario = disciplinaDTO.Horario;
+                disciplina.Professores = new List<Professor>();
 
-                //var professoresInformados = _uow.Usuarios.GetAll();
-                //disciplina.VincularProfessores(disciplinaDto.Professores);
-                //await _uow.CommitAsync();
+                List<Professor> professorsInformados = await _uow.Usuarios.ObterProfessores(disciplinaDTO.Professores);
+                disciplina.AdicionarProfessores(professorsInformados);
+                
+                await _uow.CommitAsync();
 
                 return Ok();
             }
@@ -87,7 +94,7 @@ namespace Avaliacoes.Api.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            Disciplina disciplina = await _uow.Disciplinas.Get(id);
+            Disciplina disciplina = await _uow.Disciplinas.ObterComProfessores(id);
 
             if (disciplina == null) return NotFound();
 

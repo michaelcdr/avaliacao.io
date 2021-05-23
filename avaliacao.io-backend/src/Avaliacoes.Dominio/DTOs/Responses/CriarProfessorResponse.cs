@@ -13,6 +13,17 @@ namespace Avaliacoes.Dominio.DTOs.Responses
 
         }
     }
+    public class CriarCoordenadorResponse : ResponseBase
+    {
+        public CriarCoordenadorResponse(bool sucesso, string mensagem, List<string> erros) : base(sucesso, mensagem, erros)
+        {
+
+        }
+        public CriarCoordenadorResponse(bool sucesso, string mensagem) : base(sucesso, mensagem)
+        {
+
+        }
+    }
 
     public class ResponseBase 
     {
