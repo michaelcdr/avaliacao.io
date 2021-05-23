@@ -22,7 +22,7 @@ namespace Avaliacoes.Dominio.DTOs
             this.Email = usuario.Email;
             this.Id = usuario.Id;
             this.Nome = usuario.Nome;
-            this.UserName = UserName;
+            this.UserName = usuario.UserName;
             this.Disciplinas = new List<int>();
 
             if (usuario.Professor != null && usuario.Professor.Disciplinas != null)
