@@ -12,6 +12,7 @@ namespace Avaliacoes.Dominio.DTOs
         public string UserName { get; set; }
         public List<int> Disciplinas { get; set; }
 
+
         public ProfessorComDisciplinaDTO()
         {
 
