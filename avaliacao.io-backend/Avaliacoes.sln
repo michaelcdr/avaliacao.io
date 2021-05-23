@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Avaliacoes.Infra", "src\Ava
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Avaliacoes.Dominio", "src\Avaliacoes.Dominio\Avaliacoes.Dominio.csproj", "{7A6BEA23-2FE1-4DC5-81A3-39482DE1980E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "avaliacao.io.mvc", "src\avaliacao.io.mvc\avaliacao.io.mvc.csproj", "{58114BDB-2A2B-4F20-928B-EFDB672334FB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "avaliacao.io.mvc", "src\avaliacao.io.mvc\avaliacao.io.mvc.csproj", "{58114BDB-2A2B-4F20-928B-EFDB672334FB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avaliacoes.Aplicacao", "src\Avaliacoes.Aplicacao\Avaliacoes.Aplicacao.csproj", "{B689C0EA-6B1C-4F86-9E2F-C69094E1B0DF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{58114BDB-2A2B-4F20-928B-EFDB672334FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{58114BDB-2A2B-4F20-928B-EFDB672334FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{58114BDB-2A2B-4F20-928B-EFDB672334FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B689C0EA-6B1C-4F86-9E2F-C69094E1B0DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B689C0EA-6B1C-4F86-9E2F-C69094E1B0DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B689C0EA-6B1C-4F86-9E2F-C69094E1B0DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B689C0EA-6B1C-4F86-9E2F-C69094E1B0DF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -29,7 +29,7 @@ namespace Avaliacoes.Infra.Repositorios.EF
             return await Context.Set<TEntity>().FindAsync(id);
         }
 
-        public async Task<IEnumerable<TEntity>> GetAll()
+        public async Task<IList<TEntity>> GetAll()
         {
             return await Context.Set<TEntity>().ToListAsync();
         }

@@ -6,9 +6,10 @@ namespace Avaliacoes.Dominio.DTOs
 {
     public class ProfessorComDisciplinaDTO
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
         public string Nome { get; set; }
         public string Email { get; set; }
+        public string UserName { get; set; }
         public List<int> Disciplinas { get; set; }
 
         public ProfessorComDisciplinaDTO()
@@ -21,7 +22,7 @@ namespace Avaliacoes.Dominio.DTOs
             this.Email = usuario.Email;
             this.Id = usuario.Id;
             this.Nome = usuario.Nome;
-
+            this.UserName = UserName;
             this.Disciplinas = new List<int>();
 
             if (usuario.Professor != null && usuario.Professor.Disciplinas != null)

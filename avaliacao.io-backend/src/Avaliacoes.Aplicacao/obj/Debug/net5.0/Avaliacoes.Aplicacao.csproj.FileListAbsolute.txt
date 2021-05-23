@@ -1,0 +1,15 @@
+F:\Projetos\_ucs\avaliacao.io\avaliacao.io-backend\src\Avaliacoes.Aplicacao\bin\Debug\net5.0\Avaliacoes.Aplicacao.deps.json
+F:\Projetos\_ucs\avaliacao.io\avaliacao.io-backend\src\Avaliacoes.Aplicacao\bin\Debug\net5.0\Avaliacoes.Aplicacao.dll
+F:\Projetos\_ucs\avaliacao.io\avaliacao.io-backend\src\Avaliacoes.Aplicacao\bin\Debug\net5.0\ref\Avaliacoes.Aplicacao.dll
+F:\Projetos\_ucs\avaliacao.io\avaliacao.io-backend\src\Avaliacoes.Aplicacao\bin\Debug\net5.0\Avaliacoes.Aplicacao.pdb
+F:\Projetos\_ucs\avaliacao.io\avaliacao.io-backend\src\Avaliacoes.Aplicacao\bin\Debug\net5.0\Avaliacoes.Dominio.dll
+F:\Projetos\_ucs\avaliacao.io\avaliacao.io-backend\src\Avaliacoes.Aplicacao\bin\Debug\net5.0\Avaliacoes.Dominio.pdb
+F:\Projetos\_ucs\avaliacao.io\avaliacao.io-backend\src\Avaliacoes.Aplicacao\obj\Debug\net5.0\Avaliacoes.Aplicacao.csprojAssemblyReference.cache
+F:\Projetos\_ucs\avaliacao.io\avaliacao.io-backend\src\Avaliacoes.Aplicacao\obj\Debug\net5.0\Avaliacoes.Aplicacao.GeneratedMSBuildEditorConfig.editorconfig
+F:\Projetos\_ucs\avaliacao.io\avaliacao.io-backend\src\Avaliacoes.Aplicacao\obj\Debug\net5.0\Avaliacoes.Aplicacao.AssemblyInfoInputs.cache
+F:\Projetos\_ucs\avaliacao.io\avaliacao.io-backend\src\Avaliacoes.Aplicacao\obj\Debug\net5.0\Avaliacoes.Aplicacao.AssemblyInfo.cs
+F:\Projetos\_ucs\avaliacao.io\avaliacao.io-backend\src\Avaliacoes.Aplicacao\obj\Debug\net5.0\Avaliacoes.Aplicacao.csproj.CoreCompileInputs.cache
+F:\Projetos\_ucs\avaliacao.io\avaliacao.io-backend\src\Avaliacoes.Aplicacao\obj\Debug\net5.0\Avaliacoes.Aplicacao.csproj.CopyComplete
+F:\Projetos\_ucs\avaliacao.io\avaliacao.io-backend\src\Avaliacoes.Aplicacao\obj\Debug\net5.0\Avaliacoes.Aplicacao.dll
+F:\Projetos\_ucs\avaliacao.io\avaliacao.io-backend\src\Avaliacoes.Aplicacao\obj\Debug\net5.0\ref\Avaliacoes.Aplicacao.dll
+F:\Projetos\_ucs\avaliacao.io\avaliacao.io-backend\src\Avaliacoes.Aplicacao\obj\Debug\net5.0\Avaliacoes.Aplicacao.pdb

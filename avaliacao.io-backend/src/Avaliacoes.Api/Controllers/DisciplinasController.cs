@@ -1,6 +1,7 @@
 ﻿using Avaliacoes.Dominio.Entidades;
 using Avaliacoes.Dominio.Requests;
 using Avaliacoes.Dominio.Transacoes;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -21,7 +22,7 @@ namespace Avaliacoes.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var disciplinas = await _uow.Disciplinas.GetAll();
+            IList<Disciplina> disciplinas = await _uow.Disciplinas.GetAll();
             return Ok(disciplinas);
         }
 
@@ -48,13 +49,12 @@ namespace Avaliacoes.Api.Controllers
                 foreach (var professorId in request.Professores)
                 {
                     Professor professor = await _uow.Usuarios.ObterProfessor(professorId);
-
-                    disciplina.VincularProfessor(professor);
+                    disciplina.AdicionarProfessor(professor);
                 }
                 
                 await _uow.CommitAsync();
-
                 var uri = Url.Action("Get", new { id = disciplina.Id });
+
                 return Created(uri, new { Id = disciplina.Id, Nome = disciplina.Nome });
             }
             else
@@ -81,7 +81,7 @@ namespace Avaliacoes.Api.Controllers
                 return Ok();
             }
             else
-                return BadRequest(new { erros = new List<string> { "Ocorreram erros de validação." }  });
+                return BadRequest(new { erros = new List<string> { "Ocorreram erros de validação." }});
         }
 
         [HttpDelete("{id}")]

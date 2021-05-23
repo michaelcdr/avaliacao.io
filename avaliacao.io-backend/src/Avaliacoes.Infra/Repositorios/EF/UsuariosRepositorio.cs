@@ -10,6 +10,8 @@ namespace Avaliacoes.Infra.Repositorios.EF
 {
     public class UsuariosRepositorio : Repositorio<Usuario>, IUsuariosRepositorio
     {
+        private const string ROLENAME_PROFESSOR = "Professor";
+
         public UsuariosRepositorio(ApplicationDbContext context) : base(context)
         {
 
@@ -22,17 +24,21 @@ namespace Avaliacoes.Infra.Repositorios.EF
 
         public async Task<List<Usuario>> ObterProfessores()
         {
-            return await ApplicationDbContext.Usuarios
-                .Where(e => e.Tipo == "Professor")
-                .Include(e => e.Professor).ToListAsync();
+            return await (from u in ApplicationDbContext.Usuarios
+                          join ru in ApplicationDbContext.UserRoles on u.Id equals ru.UserId
+                          join r in ApplicationDbContext.Roles on ru.RoleId equals r.Id
+                          where r.Name  == ROLENAME_PROFESSOR
+                          select u).Include(e => e.Professor).ThenInclude(e => e.Disciplinas).ToListAsync();
         }
 
-        public async Task<Professor> ObterProfessor(int id)
+        public async Task<Professor> ObterProfessor(string id)
         {
-            return await ApplicationDbContext.Usuarios.Include(usuario => usuario.Professor).ThenInclude(e=>e.Usuario)
-                .Include(e=>e.Professor).ThenInclude(p => p.Disciplinas)
-                .Where(usuario => usuario.Id == id && usuario.Tipo == "Professor").Select(usuario => usuario.Professor)
-                .SingleOrDefaultAsync();
+            var usuario = await (from u in ApplicationDbContext.Usuarios
+                                 join ru in ApplicationDbContext.UserRoles on u.Id equals ru.UserId
+                                 join r in ApplicationDbContext.Roles on ru.RoleId equals r.Id
+                                 where r.Name == ROLENAME_PROFESSOR && u.Id == id
+                                 select u).Include(e=>e.Professor).ThenInclude(e=>e.Disciplinas).SingleOrDefaultAsync();
+            return usuario.Professor;
         }
     }
 }

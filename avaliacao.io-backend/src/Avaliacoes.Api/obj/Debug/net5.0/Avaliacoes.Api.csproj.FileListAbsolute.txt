@@ -284,3 +284,11 @@ F:\Projetos\_ucs\avaliacao.io\avaliacao.io-backend\src\Avaliacoes.Api\obj\Debug\
 F:\Projetos\_ucs\avaliacao.io\avaliacao.io-backend\src\Avaliacoes.Api\obj\Debug\net5.0\Avaliacoes.Api.genruntimeconfig.cache
 F:\Projetos\_ucs\avaliacao.io\avaliacao.io-backend\src\Avaliacoes.Api\bin\Debug\net5.0\Microsoft.DotNet.PlatformAbstractions.dll
 F:\Projetos\_ucs\avaliacao.io\avaliacao.io-backend\src\Avaliacoes.Api\bin\Debug\net5.0\Microsoft.Extensions.DependencyModel.dll
+F:\Projetos\_ucs\avaliacao.io\avaliacao.io-backend\src\Avaliacoes.Api\bin\Debug\net5.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+F:\Projetos\_ucs\avaliacao.io\avaliacao.io-backend\src\Avaliacoes.Api\bin\Debug\net5.0\Microsoft.AspNetCore.Cryptography.Internal.dll
+F:\Projetos\_ucs\avaliacao.io\avaliacao.io-backend\src\Avaliacoes.Api\bin\Debug\net5.0\Microsoft.AspNetCore.Cryptography.KeyDerivation.dll
+F:\Projetos\_ucs\avaliacao.io\avaliacao.io-backend\src\Avaliacoes.Api\bin\Debug\net5.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
+F:\Projetos\_ucs\avaliacao.io\avaliacao.io-backend\src\Avaliacoes.Api\bin\Debug\net5.0\Microsoft.Extensions.Identity.Core.dll
+F:\Projetos\_ucs\avaliacao.io\avaliacao.io-backend\src\Avaliacoes.Api\bin\Debug\net5.0\Microsoft.Extensions.Identity.Stores.dll
+F:\Projetos\_ucs\avaliacao.io\avaliacao.io-backend\src\Avaliacoes.Api\bin\Debug\net5.0\Avaliacoes.Aplicacao.dll
+F:\Projetos\_ucs\avaliacao.io\avaliacao.io-backend\src\Avaliacoes.Api\bin\Debug\net5.0\Avaliacoes.Aplicacao.pdb

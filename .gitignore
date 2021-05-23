@@ -1,1 +1,9 @@
 avaliacao.io-frontend-teste/node_modules
+avaliacao.io-backend/.vs
+avaliacao.io-backend/src/avaliacao.io.mvc/obj
+avaliacao.io-backend/src/Avaliacoes.Api/obj
+avaliacao.io-backend/src/Avaliacoes.Api/bin
+avaliacao.io-backend/src/Avaliacoes.Dominio/obj
+avaliacao.io-backend/src/Avaliacoes.Dominio/bin
+avaliacao.io-backend/src/Avaliacoes.Infra/obj
+avaliacao.io-backend/src/Avaliacoes.Infra/bin

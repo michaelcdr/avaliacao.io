@@ -9,6 +9,6 @@ namespace Avaliacoes.Dominio.Repositorios
 
         Task<TEntity> Get(object id);
         void Delete(TEntity entidade);
-        Task<IEnumerable<TEntity>> GetAll();
+        Task<IList<TEntity>> GetAll();
     }
 }

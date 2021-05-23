@@ -1,13 +1,13 @@
-﻿using Avaliacoes.Dominio.DTOs;
+﻿using Avaliacoes.Aplicacao.Services;
+using Avaliacoes.Dominio.DTOs;
+using Avaliacoes.Dominio.DTOs.Responses;
 using Avaliacoes.Dominio.Entidades;
+using Avaliacoes.Dominio.InputModels;
 using Avaliacoes.Dominio.Transacoes;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace Avaliacoes.Api.Controllers
 {
@@ -16,10 +16,11 @@ namespace Avaliacoes.Api.Controllers
     public class ProfessoresController : ControllerBase
     {
         private readonly IUnitOfWork _uow;
-
-        public ProfessoresController(IUnitOfWork uow)
+        private readonly IUsuarioService _usuarioService;
+        public ProfessoresController(IUnitOfWork uow, IUsuarioService usuarioService)
         {
             this._uow = uow;
+            this._usuarioService = usuarioService;
         }
 
         [HttpGet]
@@ -27,62 +28,33 @@ namespace Avaliacoes.Api.Controllers
         {
             List<Usuario> usuarios = await _uow.Usuarios.ObterProfessores();
             var professores = new List<ProfessorComDisciplinaDTO>();
+            
             if (usuarios.Count > 0)
-            {
-                professores = usuarios.Select(u => new ProfessorComDisciplinaDTO
-                {
-                    Id = u.Id,
-                    Email = u.Email,
-                    Nome = u.Nome
-                }).ToList();
-            }
+                professores = usuarios.Select(usuario => new ProfessorComDisciplinaDTO(usuario)).ToList();
+            
             return Ok(professores);
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
+        public async Task<IActionResult> Get(string id)
         {
             Professor professor = await _uow.Usuarios.ObterProfessor(id);
 
             if (professor == null) return NotFound();
 
             var professorComDisciplinaDTO = new ProfessorComDisciplinaDTO(professor.Usuario);
+
             return Ok(professorComDisciplinaDTO);
         }
 
         [HttpPost]
-        public async Task Post([FromBody] ProfessorDTO professorDTO)
+        public async Task<IActionResult> Post([FromBody] CriarProfessorRequest request)
         {
-            var usuario = new Usuario
-            {
-                Nome = professorDTO.Nome,
-                Senha = professorDTO.Senha,
-                Email = professorDTO.Email,
-                Tipo = "Professor",
-                Professor = new Professor 
-                { 
-                    Disciplinas = new List<Disciplina>() 
-                    {
-                    
-                    } 
-                }
-            };
+            CriarProfessorResponse response = await _usuarioService.CriarProfessor(request);
+            
+            if (response.Sucesso) return Ok(response);
 
-            _uow.Usuarios.Add(usuario);
-            await _uow.CommitAsync();
-
-            //usuario.Professor = new Professor() { UsuarioId = usuario.Id, Usuario = usuario };
-            //await _uow.CommitAsync();
+            return BadRequest(response);
         }
-
-        //[HttpPut("{id}")]
-        //public void Put(int id, [FromBody] string value)
-        //{
-        //}
-
-        //[HttpDelete("{id}")]
-        //public void Delete(int id)
-        //{
-        //}
     }
 }
