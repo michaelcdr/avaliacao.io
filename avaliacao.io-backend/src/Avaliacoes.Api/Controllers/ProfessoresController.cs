@@ -57,6 +57,16 @@ namespace Avaliacoes.Api.Controllers
             return BadRequest(response);
         }
 
+        [HttpPut]
+        public async Task<IActionResult> Put([FromBody] AtualizarProfessorRequest request)
+        {
+            AtualizarProfessorResponse response = await _usuarioService.AtualizarProfessor(request);
+
+            if (response.Sucesso) return Ok(response);
+
+            return BadRequest(response);
+        }
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(string id)
         {

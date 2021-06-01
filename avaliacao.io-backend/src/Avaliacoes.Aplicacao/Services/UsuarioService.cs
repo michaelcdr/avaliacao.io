@@ -6,6 +6,7 @@ using Avaliacoes.Dominio.Transacoes;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Avaliacoes.Aplicacao.Services
@@ -16,6 +17,7 @@ namespace Avaliacoes.Aplicacao.Services
         private const string ERRO_CRIAR_COORDENADOR = "Não foi possivel criar o professor.";
         private const string MSG_CRIAR_COORDENADOR = "Coordenador criado com sucesso.";
         private const string MSG_SUCESSO = "Professor criado com sucesso.";
+        private const string MSG_UPDATE_SUCESSO = "Professor atualizado com sucesso.";
         private const string ROLE_PROFESSOR = "Professor";
         private const string ROLE_COORDENADOR = "Coordenador";
 
@@ -89,6 +91,48 @@ namespace Avaliacoes.Aplicacao.Services
                 await _uow.CommitAsync();
             }
             return new CriarProfessorResponse(true, MSG_SUCESSO);
+        }
+
+        public async Task<AtualizarProfessorResponse> AtualizarProfessor(AtualizarProfessorRequest request)
+        {
+            Professor professor = await _uow.Usuarios.ObterProfessor(request.Id);
+
+            if (!professor.Usuario.TaValido())
+                return new AtualizarProfessorResponse(false, ERRO_BASE, professor.Usuario.ObterErros());
+
+            professor.Usuario.Nome = request.Nome;
+            professor.Usuario.Email = request.Email;
+            professor.Usuario.UserName = request.UserName;
+
+            // vinculando disciplinas no professor
+            if (request.Disciplinas != null)
+            {
+                List<Disciplina> disciplinasInformadas = await _uow.Disciplinas.ObterTodas(request.Disciplinas);
+
+                if (disciplinasInformadas != null)
+                {
+                    foreach (Disciplina disciplinaInformada in disciplinasInformadas)
+                    {
+                        if (!professor.Disciplinas.Any(e => e.Id == disciplinaInformada.Id))
+                        {
+                            disciplinaInformada.AdicionarProfessor(professor);
+                        }
+                    }
+
+                    var idsRemover = professor.Disciplinas.Select(e => e.Id).ToList().Except(request.Disciplinas).ToList();
+
+                    List<Disciplina> disciplinasRemover = professor.Disciplinas.Where(e => idsRemover.Contains(e.Id)).ToList();
+
+                    foreach (var disciplinaInformada in disciplinasRemover)
+                    {
+                        disciplinaInformada.RemoverProfessor(professor);
+                    }
+                }
+            }
+
+            await _uow.CommitAsync();
+
+            return new AtualizarProfessorResponse(true, MSG_UPDATE_SUCESSO);
         }
     }
 }

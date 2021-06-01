@@ -37,6 +37,18 @@ namespace Avaliacoes.Dominio.DTOs.Responses
         }
     }
 
+    public class AtualizarProfessorResponse : ResponseBase
+    {
+        public AtualizarProfessorResponse(bool sucesso, string mensagem, List<string> erros) : base(sucesso, mensagem, erros)
+        {
+
+        }
+        public AtualizarProfessorResponse(bool sucesso, string mensagem) : base(sucesso, mensagem)
+        {
+
+        }
+    }
+
     public class ResponseBase 
     {
         public List<string> Erros { get; set; }

@@ -36,6 +36,13 @@ namespace Avaliacoes.Dominio.Entidades
             this.Professores.Add(professor);
         }
 
+        public void RemoverProfessor(Professor professor)
+        {
+            if (this.Professores != null)
+            {
+                this.Professores.Remove(professor);
+            }
+        }
         public DisciplinaDTO ToDTO()
         {
             return new DisciplinaDTO

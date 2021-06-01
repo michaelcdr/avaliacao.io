@@ -2,19 +2,21 @@
 
 namespace Avaliacoes.Dominio.InputModels
 {
-    public class CriarProfessorRequest
+    public class CriarCoordenadorRequest
     {
-        public CriarProfessorRequest(string nome, string userName, string email, string senha)
+        public CriarCoordenadorRequest(string nome, string userName, string email, string senha)
         {
             Nome = nome;
             UserName = userName;
             Email = email;
             Senha = senha;
         }
-        public CriarProfessorRequest()
+
+        public CriarCoordenadorRequest()
         {
 
         }
+
         public string Nome { get; set; }
         public string UserName { get; set; }
         public string Email { get; set; }
