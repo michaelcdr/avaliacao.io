@@ -1,20 +1,21 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Avaliacoes.Dominio.Entidades
 {
-    public class EntidadeBase
+    public abstract class EntidadeBase
     {
-        //public EntidadeBase()
-        //{
-        //    Erros = new List<string>();
-        //}
+        public List<Notificacao> _erros { get; private set; } = new List<Notificacao>();
+        public List<Notificacao> ObterErros()
+        {
+            return this._erros;
+        }
 
-        
-        //public List<string> Erros { get; private set; }
+        public abstract bool TaValido();
 
-        //public void AddErro(string mensagem)
-        //{
-        //    this.Erros.Add(mensagem);
-        //}
+        public void AdicionarErro(string mensagem, string propriedade)
+        {
+            _erros.Add(new Notificacao(mensagem,propriedade));
+        }
     }
 }

@@ -25,6 +25,18 @@ namespace Avaliacoes.Dominio.DTOs.Responses
         }
     }
 
+    public class CriarAlunoResponse : ResponseBase
+    {
+        public CriarAlunoResponse(bool sucesso, string mensagem, List<string> erros) : base(sucesso, mensagem, erros)
+        {
+
+        }
+        public CriarAlunoResponse(bool sucesso, string mensagem) : base(sucesso, mensagem)
+        {
+
+        }
+    }
+
     public class ResponseBase 
     {
         public List<string> Erros { get; set; }

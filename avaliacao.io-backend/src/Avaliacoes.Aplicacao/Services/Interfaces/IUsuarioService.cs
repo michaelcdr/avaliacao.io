@@ -8,5 +8,6 @@ namespace Avaliacoes.Aplicacao.Services
     {
         Task<CriarProfessorResponse> CriarProfessor(CriarProfessorRequest request);
         Task<CriarCoordenadorResponse> CriarCoordenador(CriarCoordenadorRequest criarCoordenadorRequest);
+        Task<CriarAlunoResponse> CriarAluno(CriarAlunoRequest request);
     }
 }

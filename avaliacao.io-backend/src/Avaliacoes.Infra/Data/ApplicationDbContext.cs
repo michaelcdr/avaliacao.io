@@ -2,7 +2,6 @@
 using Avaliacoes.Infra.Data.EF.TableMaping;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
 
 namespace Avaliacoes.Infra.Data
 {
@@ -10,24 +9,35 @@ namespace Avaliacoes.Infra.Data
     {
         public DbSet<Usuario> Usuarios { get; set; }
         public DbSet<Disciplina> Disciplinas { get; set; }
-        
+        public DbSet<Competencia> Competencias { get; set; }
+        public DbSet<Habilidade> Habilidades { get; set; }
+        public DbSet<Dimensao> Dimensoes { get; set; }
+
         //public ApplicationDbContext() {       } // SqlServer Tem que ter
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
-
+            
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
 
+            builder.Entity<Disciplina>().Ignore(e => e._erros);
+            builder.Entity<Competencia>().Ignore(e => e._erros);
+
             builder.ApplyConfiguration(new UsuarioMap());
             builder.ApplyConfiguration(new TipoUsuarioMap());
+            
             builder.ApplyConfiguration(new ProfessorMap());
             builder.ApplyConfiguration(new AlunoMap());
             builder.ApplyConfiguration(new CoordenadorMap());
+
             builder.ApplyConfiguration(new DisciplinaMap());
+            builder.ApplyConfiguration(new CompetenciaMap());
+            builder.ApplyConfiguration(new HabilidadeMap());
+            builder.ApplyConfiguration(new DimensaoMap());
         }
     }
 }

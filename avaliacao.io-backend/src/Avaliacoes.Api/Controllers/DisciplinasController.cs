@@ -21,6 +21,10 @@ namespace Avaliacoes.Api.Controllers
             this._uow = uow;
         }
 
+        /// <summary>
+        /// Metódo responsável por retornar disciplinas.
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public async Task<IActionResult> Get()
         {
@@ -73,7 +77,9 @@ namespace Avaliacoes.Api.Controllers
 
             if (disciplina == null) return NotFound();
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
+                return BadRequest(new { erros = disciplina.ObterErros() });
+            else
             {
                 disciplina.Descritivo = disciplinaDTO.Descritivo;
                 disciplina.Nome = disciplinaDTO.Nome;
@@ -86,9 +92,7 @@ namespace Avaliacoes.Api.Controllers
                 await _uow.CommitAsync();
 
                 return Ok();
-            }
-            else
-                return BadRequest(new { erros = new List<string> { "Ocorreram erros de validação." }});
+            }   
         }
 
         [HttpDelete("{id}")]

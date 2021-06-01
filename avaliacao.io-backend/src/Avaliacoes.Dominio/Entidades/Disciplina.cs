@@ -4,14 +4,14 @@ using System.Linq;
 
 namespace Avaliacoes.Dominio.Entidades
 {
-    public class Disciplina 
+    public class Disciplina : EntidadeBase
     {
         public int Id { get; set; }
         public string Nome { get; set; }
         public string Descritivo { get; set; }
         public string Horario { get; set; }
         public List<Professor> Professores { get; set; }
-        //public List<Competencia> Competencias { get; set; }
+        public List<Competencia> Competencias { get; set; }
         
         public Disciplina(string nome, string descritivo)
         {
@@ -25,9 +25,7 @@ namespace Avaliacoes.Dominio.Entidades
                 this.Professores = new List<Professor>();
 
             foreach (var professor in professores)
-            {
                 this.Professores.Add(professor);
-            }
         }
 
         public void AdicionarProfessor(Professor professor)
@@ -51,36 +49,16 @@ namespace Avaliacoes.Dominio.Entidades
                     : this.Professores.Select(e => e.UsuarioId).ToList()
             };
         }
+
+        public override bool TaValido()
+        {
+            if (string.IsNullOrEmpty(this.Nome))
+                this.AdicionarErro("Informe o nome.", Nome);
+
+            if (string.IsNullOrEmpty(this.Horario))
+                this.AdicionarErro("Informe o horário.",Horario);
+
+            return this._erros.Count == 0;
+        }
     }
-
-
-
-
-
-    //public class Competencia
-    //{
-    //    public int Id { get; set; }
-    //    public string Nome { get; set; }
-    //    public string Descricao { get; set; }
-    //    public Disciplina Disciplina { get; set; }
-    //    public int DisciplinaId { get; set; }
-    //    public List<Habilidade> Habilidades { get; set; }
-    //}
-    //public class Habilidade
-    //{
-    //    public int Id { get; set; }
-    //    public string Nome { get; set; }
-    //    public string Descricao { get; set; }
-    //    public int CompetenciaId { get; set; }
-    //    public Competencia Competencia { get; set; }
-    //    public List<Dimensao> Dimensoes { get; set; }
-    //}
-    //public class Dimensao
-    //{
-    //    public int Id { get; set; }
-    //    public string Nome { get; set; }
-    //    public int Codigo { get; set; }
-    //    public Habilidade Habilidade { get; set; }
-    //    public int HabilidadeId { get; set; }
-    //}
 }

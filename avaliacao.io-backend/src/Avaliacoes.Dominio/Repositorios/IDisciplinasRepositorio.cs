@@ -13,4 +13,9 @@ namespace Avaliacoes.Dominio.Repositorios
         Task<List<Disciplina>> ObterTodasComProfessores();
         Task<Disciplina> ObterComProfessores(int id);
     }
+
+    public interface ICompetenciasRepositorio : IRepositorio<Competencia>
+    {
+        Task<IList<Competencia>> ObterTodasPorDisciplina(int idCompetencia);
+    }
 }

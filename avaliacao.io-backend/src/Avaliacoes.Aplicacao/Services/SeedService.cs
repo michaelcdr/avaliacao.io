@@ -16,7 +16,8 @@ namespace Avaliacoes.Aplicacao.Services
 
         public SeedService(
             UserManager<Usuario> userManager,
-            RoleManager<TipoUsuario> roleManager, IUsuarioService usuarioService)
+            RoleManager<TipoUsuario> roleManager, 
+            IUsuarioService usuarioService)
         {
             _userManager = userManager;
             _roleManager = roleManager;

@@ -35,4 +35,22 @@ namespace Avaliacoes.Infra.Repositorios.EF
             return await Context.Set<Disciplina>().Include(e => e.Professores).ToListAsync();
         }
     }
+
+    public class CompetenciasRepositorio : Repositorio<Competencia>, ICompetenciasRepositorio
+    {
+        public CompetenciasRepositorio(ApplicationDbContext context) : base(context)
+        {
+
+        }
+
+        public ApplicationDbContext ApplicationDbContext
+        {
+            get { return Context as ApplicationDbContext; }
+        }
+
+        public async Task<IList<Competencia>> ObterTodasPorDisciplina(int idDisciplina)
+        {
+            return await Context.Set<Competencia>().Where(e => e.DisciplinaId == idDisciplina).ToListAsync();
+        }
+    }
 }

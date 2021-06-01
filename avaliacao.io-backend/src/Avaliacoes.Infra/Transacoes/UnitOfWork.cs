@@ -11,6 +11,7 @@ namespace Avaliacoes.Infra.Transacoes
 
         public IDisciplinasRepositorio Disciplinas { get; private set; }
         public IUsuariosRepositorio Usuarios { get; private set; }
+        public ICompetenciasRepositorio Compentencias { get; private set; }
 
         public  async Task<int> CommitAsync()
         {
@@ -21,11 +22,13 @@ namespace Avaliacoes.Infra.Transacoes
         public UnitOfWork(
             ApplicationDbContext context,
             IDisciplinasRepositorio disciplinasRepositorio,
-            IUsuariosRepositorio usuariosRepositorio)
+            IUsuariosRepositorio usuariosRepositorio,
+            ICompetenciasRepositorio competenciasRepositorio)
         {
             this._context = context;
             this.Disciplinas = disciplinasRepositorio;
             this.Usuarios = usuariosRepositorio;
+            this.Compentencias = competenciasRepositorio;
         }
     }
 }

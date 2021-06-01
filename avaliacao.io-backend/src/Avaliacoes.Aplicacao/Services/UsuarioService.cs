@@ -18,6 +18,7 @@ namespace Avaliacoes.Aplicacao.Services
         private const string MSG_SUCESSO = "Professor criado com sucesso.";
         private const string ROLE_PROFESSOR = "Professor";
         private const string ROLE_COORDENADOR = "Coordenador";
+
         private readonly UserManager<Usuario> _userManager;
         private readonly IUnitOfWork _uow;
 
@@ -25,6 +26,11 @@ namespace Avaliacoes.Aplicacao.Services
         {
             this._userManager = userManager;
             this._uow = uow;
+        }
+
+        public async Task<CriarAlunoResponse> CriarAluno(CriarAlunoRequest request)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task<CriarCoordenadorResponse> CriarCoordenador(CriarCoordenadorRequest request)
