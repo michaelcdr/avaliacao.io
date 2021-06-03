@@ -12,8 +12,11 @@ namespace Avaliacoes.Dominio.InputModels
             Senha = senha;
 
             Disciplinas = disciplinas == null ? new List<int>() : disciplinas;
-        } 
+        }
+        public CriarAlunoRequest()
+        {
 
+        }
         public string Nome { get; set; }
         public string UserName { get; set; }
         public string Email { get; set; }

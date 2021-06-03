@@ -1,4 +1,6 @@
 ﻿using Avaliacoes.Dominio.DTOs;
+using Avaliacoes.Dominio.Requests;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -11,6 +13,7 @@ namespace Avaliacoes.Dominio.Entidades
         public string Descritivo { get; set; }
         public string Horario { get; set; }
         public List<Professor> Professores { get; set; }
+        public List<Aluno> Alunos { get; set; }
         public List<Competencia> Competencias { get; set; }
         
         public Disciplina(string nome, string descritivo)
@@ -34,6 +37,14 @@ namespace Avaliacoes.Dominio.Entidades
                 this.Professores = new List<Professor>();
 
             this.Professores.Add(professor);
+        }
+
+        public void AdicionaAluno(Aluno aluno)
+        {
+            if (this.Alunos == null)
+                this.Alunos = new List<Aluno>();
+
+            this.Alunos.Add(aluno);
         }
 
         public void RemoverProfessor(Professor professor)
@@ -60,12 +71,20 @@ namespace Avaliacoes.Dominio.Entidades
         public override bool TaValido()
         {
             if (string.IsNullOrEmpty(this.Nome))
-                this.AdicionarErro("Informe o nome.", Nome);
+                this.AdicionarErro("Informe o nome.", "Nome");
 
             if (string.IsNullOrEmpty(this.Horario))
-                this.AdicionarErro("Informe o horário.",Horario);
+                this.AdicionarErro("Informe o horário.","Horario");
 
             return this._erros.Count == 0;
+        }
+
+        public void Atualizar(DisciplinaRequest disciplinaDTO)
+        {
+            this.Descritivo = disciplinaDTO.Descritivo;
+            this.Nome = disciplinaDTO.Nome;
+            this.Horario = disciplinaDTO.Horario;
+            this.Professores = new List<Professor>();
         }
     }
 }

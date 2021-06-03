@@ -50,24 +50,25 @@ namespace Avaliacoes.Api.Controllers
         {
             var disciplina = new Disciplina(request.Nome, request.Descritivo);
 
-            if (ModelState.IsValid)
+            if (!disciplina.TaValido())
+                return BadRequest(new { erros = disciplina.ObterErros() });
+            else
             {
                 _uow.Disciplinas.Add(disciplina);
                 await _uow.CommitAsync();
 
-                foreach (var professorId in request.Professores)
+                foreach (string professorId in request.Professores)
                 {
                     Professor professor = await _uow.Usuarios.ObterProfessor(professorId);
                     disciplina.AdicionarProfessor(professor);
                 }
                 
                 await _uow.CommitAsync();
+
                 var uri = Url.Action("Get", new { id = disciplina.Id });
 
                 return Created(uri, new { Id = disciplina.Id, Nome = disciplina.Nome });
             }
-            else
-                return BadRequest(new { erros = new List<string> { "Ocorreram erros de validação." } });
         }
 
         [HttpPut("{id}")]
@@ -77,14 +78,11 @@ namespace Avaliacoes.Api.Controllers
 
             if (disciplina == null) return NotFound();
 
-            if (!ModelState.IsValid)
+            if (!disciplina.TaValido())
                 return BadRequest(new { erros = disciplina.ObterErros() });
             else
             {
-                disciplina.Descritivo = disciplinaDTO.Descritivo;
-                disciplina.Nome = disciplinaDTO.Nome;
-                disciplina.Horario = disciplinaDTO.Horario;
-                disciplina.Professores = new List<Professor>();
+                disciplina.Atualizar(disciplinaDTO);
 
                 List<Professor> professorsInformados = await _uow.Usuarios.ObterProfessores(disciplinaDTO.Professores);
                 disciplina.AdicionarProfessores(professorsInformados);

@@ -50,7 +50,7 @@ namespace Avaliacoes.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] CriarProfessorRequest request)
         {
-            CriarProfessorResponse response = await _usuarioService.CriarProfessor(request);
+            AppResponse response = await _usuarioService.CriarProfessor(request);
             
             if (response.Sucesso) return Ok(response);
 
@@ -60,7 +60,7 @@ namespace Avaliacoes.Api.Controllers
         [HttpPut]
         public async Task<IActionResult> Put([FromBody] AtualizarProfessorRequest request)
         {
-            AtualizarProfessorResponse response = await _usuarioService.AtualizarProfessor(request);
+            AppResponse response = await _usuarioService.AtualizarProfessor(request);
 
             if (response.Sucesso) return Ok(response);
 

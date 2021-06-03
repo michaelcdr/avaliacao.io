@@ -9,6 +9,7 @@ namespace Avaliacoes.Infra.Data.EF.TableMaping
         public void Configure(EntityTypeBuilder<Professor> builder)
         {
             builder.ToTable("Professores");
+
             builder.HasMany(professor => professor.Disciplinas)
                    .WithMany(professor => professor.Professores);
 

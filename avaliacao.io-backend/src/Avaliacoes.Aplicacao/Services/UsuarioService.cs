@@ -4,7 +4,6 @@ using Avaliacoes.Dominio.Entidades;
 using Avaliacoes.Dominio.InputModels;
 using Avaliacoes.Dominio.Transacoes;
 using Microsoft.AspNetCore.Identity;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -30,50 +29,78 @@ namespace Avaliacoes.Aplicacao.Services
             this._uow = uow;
         }
 
-        public async Task<CriarAlunoResponse> CriarAluno(CriarAlunoRequest request)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<CriarCoordenadorResponse> CriarCoordenador(CriarCoordenadorRequest request)
+        public async Task<AppResponse> CriarAluno(CriarAlunoRequest request)
         {
             var usuario = new Usuario(request.Nome, request.UserName, request.Email);
 
-            if (!usuario.TaValido())
-                return new CriarCoordenadorResponse(false, ERRO_CRIAR_COORDENADOR, usuario.ObterErros());
+            if (!usuario.TaValido()) return new AppResponse(false, ERRO_CRIAR_COORDENADOR, usuario.ObterErros());
 
             IdentityResult result = await _userManager.CreateAsync(usuario, request.Senha);
 
             if (!result.Succeeded)
-                return new CriarCoordenadorResponse(false, ERRO_CRIAR_COORDENADOR, IdentityHelper.ObterErros(result));
+                return new AppResponse(false, ERRO_CRIAR_COORDENADOR, IdentityHelper.ObterErros(result));
             else
             {
                 IdentityResult resultRole = await _userManager.AddToRoleAsync(usuario, ROLE_COORDENADOR);
 
-                if (!resultRole.Succeeded) return new CriarCoordenadorResponse(false, ERRO_CRIAR_COORDENADOR, IdentityHelper.ObterErros(result));
+                if (!resultRole.Succeeded) return new AppResponse(false, ERRO_CRIAR_COORDENADOR, IdentityHelper.ObterErros(result));
 
-                usuario.Coordenador = new Coordenador { UsuarioId = usuario.Id };
+                usuario.Aluno = new Aluno { UsuarioId = usuario.Id };
                 await _uow.CommitAsync();
+
+                // vinculando disciplinas no aluno
+                if (request.Disciplinas != null)
+                {
+                    List<Disciplina> disciplinasInformadas = await _uow.Disciplinas.ObterTodas(request.Disciplinas);
+
+                    if (disciplinasInformadas != null)
+                        foreach (Disciplina disciplinaInformada in disciplinasInformadas)
+                            disciplinaInformada.AdicionaAluno(usuario.Aluno);
+
+                    await _uow.CommitAsync();
+                }
             }
-            return new CriarCoordenadorResponse(true, MSG_CRIAR_COORDENADOR);
+            return new AppResponse(true, MSG_CRIAR_COORDENADOR);
         }
 
-        public async Task<CriarProfessorResponse> CriarProfessor(CriarProfessorRequest request)
+        public async Task<AppResponse> CriarCoordenador(CriarCoordenadorRequest request)
         {
             var usuario = new Usuario(request.Nome, request.UserName, request.Email);
 
-            if (!usuario.TaValido())
-                return new CriarProfessorResponse(false, ERRO_BASE, usuario.ObterErros());
+            if (!usuario.TaValido()) return new AppResponse(false, ERRO_CRIAR_COORDENADOR, usuario.ObterErros());
 
             IdentityResult result = await _userManager.CreateAsync(usuario, request.Senha);
 
             if (!result.Succeeded)
-                return new CriarProfessorResponse(false, ERRO_BASE, IdentityHelper.ObterErros(result));
+                return new AppResponse(false, ERRO_CRIAR_COORDENADOR, IdentityHelper.ObterErros(result));
+            else
+            {
+                IdentityResult resultRole = await _userManager.AddToRoleAsync(usuario, ROLE_COORDENADOR);
+
+                if (!resultRole.Succeeded) return new AppResponse(false, ERRO_CRIAR_COORDENADOR, IdentityHelper.ObterErros(result));
+
+                usuario.Coordenador = new Coordenador { UsuarioId = usuario.Id };
+                await _uow.CommitAsync();
+            }
+            return new AppResponse(true, MSG_CRIAR_COORDENADOR);
+        }
+
+        public async Task<AppResponse> CriarProfessor(CriarProfessorRequest request)
+        {
+            var usuario = new Usuario(request.Nome, request.UserName, request.Email);
+
+            if (!usuario.TaValido())
+                return new AppResponse(false, ERRO_BASE, usuario.ObterErros());
+
+            IdentityResult result = await _userManager.CreateAsync(usuario, request.Senha);
+
+            if (!result.Succeeded)
+                return new AppResponse(false, ERRO_BASE, IdentityHelper.ObterErros(result));
             else
             {
                 IdentityResult resultRole = await _userManager.AddToRoleAsync(usuario, ROLE_PROFESSOR);
 
-                if (!resultRole.Succeeded) return new CriarProfessorResponse(false, ERRO_BASE, IdentityHelper.ObterErros(result));
+                if (!resultRole.Succeeded) return new AppResponse(false, ERRO_BASE, IdentityHelper.ObterErros(result));
 
                 usuario.Professor = new Professor { UsuarioId = usuario.Id };
                 await _uow.CommitAsync();
@@ -90,15 +117,15 @@ namespace Avaliacoes.Aplicacao.Services
 
                 await _uow.CommitAsync();
             }
-            return new CriarProfessorResponse(true, MSG_SUCESSO);
+            return new AppResponse(true, MSG_SUCESSO);
         }
 
-        public async Task<AtualizarProfessorResponse> AtualizarProfessor(AtualizarProfessorRequest request)
+        public async Task<AppResponse> AtualizarProfessor(AtualizarProfessorRequest request)
         {
             Professor professor = await _uow.Usuarios.ObterProfessor(request.Id);
 
             if (!professor.Usuario.TaValido())
-                return new AtualizarProfessorResponse(false, ERRO_BASE, professor.Usuario.ObterErros());
+                return new AppResponse(false, ERRO_BASE, professor.Usuario.ObterErros());
 
             professor.Usuario.Nome = request.Nome;
             professor.Usuario.Email = request.Email;
@@ -132,7 +159,7 @@ namespace Avaliacoes.Aplicacao.Services
 
             await _uow.CommitAsync();
 
-            return new AtualizarProfessorResponse(true, MSG_UPDATE_SUCESSO);
+            return new AppResponse(true, MSG_UPDATE_SUCESSO);
         }
     }
 }

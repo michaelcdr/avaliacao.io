@@ -6,9 +6,9 @@ namespace Avaliacoes.Aplicacao.Services
 {
     public interface IUsuarioService
     {
-        Task<CriarProfessorResponse> CriarProfessor(CriarProfessorRequest request);
-        Task<CriarCoordenadorResponse> CriarCoordenador(CriarCoordenadorRequest criarCoordenadorRequest);
-        Task<CriarAlunoResponse> CriarAluno(CriarAlunoRequest request);
-        Task<AtualizarProfessorResponse> AtualizarProfessor(AtualizarProfessorRequest request);
+        Task<AppResponse> CriarProfessor(CriarProfessorRequest request);
+        Task<AppResponse> CriarCoordenador(CriarCoordenadorRequest criarCoordenadorRequest);
+        Task<AppResponse> CriarAluno(CriarAlunoRequest request);
+        Task<AppResponse> AtualizarProfessor(AtualizarProfessorRequest request);
     }
 }

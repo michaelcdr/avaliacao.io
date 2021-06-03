@@ -9,7 +9,11 @@ namespace Avaliacoes.Infra.Data.EF.TableMaping
         public void Configure(EntityTypeBuilder<Aluno> builder)
         {
             builder.ToTable("Alunos");
+
             builder.Property(e => e.Matricula).HasMaxLength(100).IsRequired(true);
+
+            builder.HasMany(e => e.Disciplinas)
+                   .WithMany(e => e.Alunos);
         }
     }
 }

@@ -1,13 +1,7 @@
 ﻿using Avaliacoes.Aplicacao.Services;
 using Avaliacoes.Dominio.DTOs.Responses;
-using Avaliacoes.Dominio.Entidades;
 using Avaliacoes.Dominio.InputModels;
-using Avaliacoes.Dominio.Transacoes;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Avaliacoes.Api.Controllers
@@ -22,14 +16,20 @@ namespace Avaliacoes.Api.Controllers
             this._usuarioServico = usuarioServico;
         }
 
-        [HttpPost]
+        [HttpPost("Cadastrar")]
         public async Task<IActionResult> Cadastrar(CriarAlunoRequest request)
         {
-            CriarAlunoResponse resposta = await _usuarioServico.CriarAluno(request);
+            AppResponse resposta = await _usuarioServico.CriarAluno(request);
 
             if (resposta.Sucesso) return Ok(resposta);
 
             return BadRequest(resposta);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ObterTodosPorDisciplina(int idDisciplina)
+        {
+            return Ok();
         }
     }
 }
