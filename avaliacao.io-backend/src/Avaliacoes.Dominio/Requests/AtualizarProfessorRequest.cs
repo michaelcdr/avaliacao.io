@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Avaliacoes.Dominio.InputModels
+namespace Avaliacoes.Dominio.Requests
 {
     public class AtualizarProfessorRequest
     {

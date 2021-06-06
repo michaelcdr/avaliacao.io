@@ -11,7 +11,8 @@ namespace Avaliacoes.Infra.Data.EF.TableMaping
             builder.ToTable("Professores");
 
             builder.HasMany(professor => professor.Disciplinas)
-                   .WithMany(professor => professor.Professores);
+                   .WithMany(professor => professor.Professores)
+                   .UsingEntity(j => j.ToTable("DisciplinasProfessores"));
 
             builder.HasOne(e => e.Usuario).WithOne(e=>e.Professor);
         }

@@ -3,6 +3,7 @@ using Avaliacoes.Dominio.DTOs;
 using Avaliacoes.Dominio.DTOs.Responses;
 using Avaliacoes.Dominio.Entidades;
 using Avaliacoes.Dominio.InputModels;
+using Avaliacoes.Dominio.Requests;
 using Avaliacoes.Dominio.Transacoes;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -27,11 +28,11 @@ namespace Avaliacoes.Api.Controllers
         public async Task<IActionResult> Get()
         {
             List<Usuario> usuarios = await _uow.Usuarios.ObterProfessores();
-            var professores = new List<ProfessorComDisciplinaDTO>();
-            
-            if (usuarios.Count > 0)
-                professores = usuarios.Select(usuario => new ProfessorComDisciplinaDTO(usuario)).ToList();
-            
+
+            var professores = usuarios.Count > 0
+                ? usuarios.Select(usuario => new ProfessorComDisciplinaDTO(usuario)).ToList()
+                : new List<ProfessorComDisciplinaDTO>();
+
             return Ok(professores);
         }
 
@@ -70,7 +71,7 @@ namespace Avaliacoes.Api.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(string id)
         {
-            Usuario usuario = await _uow.Usuarios.Obter(id);
+            Usuario usuario = await _uow.Usuarios.Obter("Professor", id);
 
             if (usuario == null) return NotFound();
 

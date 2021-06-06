@@ -1,4 +1,6 @@
 ﻿using Avaliacoes.Dominio.DTOs;
+using Avaliacoes.Dominio.Requests;
+using System;
 using System.Collections.Generic;
 
 namespace Avaliacoes.Dominio.Entidades
@@ -30,6 +32,13 @@ namespace Avaliacoes.Dominio.Entidades
         public CompenciaDTO ToDTO()
         {
             return new CompenciaDTO(this.Id,this.Nome, this.Descritivo, this.DisciplinaId);
+        }
+
+        public void Atualizar(CompetenciaRequest request)
+        {
+            this.Nome = request.Nome;
+            this.Descritivo = request.Descritivo;
+            this.DisciplinaId = request.DisciplinaId;
         }
     }
 }

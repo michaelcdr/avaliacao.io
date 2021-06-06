@@ -35,16 +35,26 @@ namespace Avaliacoes.Api.Controllers
             return Ok(disciplinasDTOs);
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult> Get(int id)
+        /// <summary>
+        /// Metódo responsável por obter uma disciplina pelo Id.
+        /// </summary>
+        /// <param name="idDisciplina">Id da disciplina</param>
+        /// <returns></returns>
+        [HttpGet("{idDisciplina}")]
+        public async Task<ActionResult> Get(int idDisciplina)
         {
-            Disciplina disciplina = await _uow.Disciplinas.ObterComProfessores(id);
+            Disciplina disciplina = await _uow.Disciplinas.ObterComProfessores(idDisciplina);
             
             if (disciplina == null) return NotFound();
 
             return Ok(disciplina.ToDTO());
         }
 
+        /// <summary>
+        /// Método responsável por criar uma nova disciplina.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<ActionResult> Post([FromBody] DisciplinaRequest request)
         {
@@ -71,10 +81,16 @@ namespace Avaliacoes.Api.Controllers
             }
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] DisciplinaRequest disciplinaDTO)
+        /// <summary>
+        /// Método responsável por atualizar uma disciplina.
+        /// </summary>
+        /// <param name="idDisciplina">Id da disciplina</param>
+        /// <param name="disciplinaDTO">Objeto com dados da disciplina.</param>
+        /// <returns></returns>
+        [HttpPut("{idDisciplina}")]
+        public async Task<IActionResult> Put(int idDisciplina, [FromBody] DisciplinaRequest disciplinaDTO)
         {
-            Disciplina disciplina = await _uow.Disciplinas.ObterComProfessores(id);
+            Disciplina disciplina = await _uow.Disciplinas.ObterComProfessores(idDisciplina);
 
             if (disciplina == null) return NotFound();
 
@@ -93,10 +109,15 @@ namespace Avaliacoes.Api.Controllers
             }   
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        /// <summary>
+        /// Método responsável por remover uma disciplina, atenção todos dados vinculados a disciplina consequentemente serão removidos.
+        /// </summary>
+        /// <param name="idDisciplina">Id da disciplina.</param>
+        /// <returns></returns>
+        [HttpDelete("{idDisciplina}")]
+        public async Task<IActionResult> Delete(int idDisciplina)
         {
-            Disciplina disciplina = await _uow.Disciplinas.ObterComProfessores(id);
+            Disciplina disciplina = await _uow.Disciplinas.ObterComProfessores(idDisciplina);
 
             if (disciplina == null) return NotFound();
 

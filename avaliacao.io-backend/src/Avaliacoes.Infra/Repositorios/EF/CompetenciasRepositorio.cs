@@ -25,9 +25,11 @@ namespace Avaliacoes.Infra.Repositorios.EF
             return await Context.Set<Competencia>().Where(e => e.DisciplinaId == idDisciplina).ToListAsync();
         }
 
-        public async Task<bool> Existe(int idDisciplina, string nome)
+        public async Task<bool> Existe(int idDisciplina, string nome, int? idCompetencia)
         {
-            return await Context.Set<Competencia>().AnyAsync(e => e.Id == idDisciplina && e.Nome == nome);
-        }
+            return idCompetencia == null
+                ? await Context.Set<Competencia>().AnyAsync(e => e.Id == idDisciplina && e.Nome == nome)
+                : await Context.Set<Competencia>().AnyAsync(e => e.Id == idDisciplina && e.Nome == nome && e.Id != idCompetencia);
+        } 
     }
 }

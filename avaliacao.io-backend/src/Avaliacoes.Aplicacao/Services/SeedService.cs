@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 using Avaliacoes.Dominio.InputModels;
+using Avaliacoes.Dominio.Requests;
 
 namespace Avaliacoes.Aplicacao.Services
 {

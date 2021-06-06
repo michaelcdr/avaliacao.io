@@ -13,7 +13,8 @@ namespace Avaliacoes.Infra.Data.EF.TableMaping
             builder.Property(e => e.Matricula).HasMaxLength(100).IsRequired(true);
 
             builder.HasMany(e => e.Disciplinas)
-                   .WithMany(e => e.Alunos);
+                   .WithMany(e => e.Alunos)
+                   .UsingEntity(j => j.ToTable("DisciplinasAlunos"));
         }
     }
 }

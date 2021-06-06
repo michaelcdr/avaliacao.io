@@ -1,19 +1,17 @@
 ﻿using System.Collections.Generic;
 
-namespace Avaliacoes.Dominio.InputModels
+namespace Avaliacoes.Dominio.Requests
 {
-    public class CriarAlunoRequest
+    public class CriarProfessorRequest
     {
-        public CriarAlunoRequest(string nome, string userName, string email, string senha, List<int> disciplinas)
+        public CriarProfessorRequest(string nome, string userName, string email, string senha)
         {
             Nome = nome;
             UserName = userName;
             Email = email;
             Senha = senha;
-
-            Disciplinas = disciplinas == null ? new List<int>() : disciplinas;
         }
-        public CriarAlunoRequest()
+        public CriarProfessorRequest()
         {
 
         }

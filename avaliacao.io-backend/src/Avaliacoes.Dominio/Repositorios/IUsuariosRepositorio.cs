@@ -9,6 +9,9 @@ namespace Avaliacoes.Dominio.Repositorios
         Task<Professor> ObterProfessor(string id);
         Task<List<Usuario>> ObterProfessores();
         Task<List<Professor>> ObterProfessores(List<string> idsUsuarios);
-        Task<Usuario> Obter(string idUsuario);
+        Task<Usuario> Obter(string tipoUsuario, string idUsuario);
+        Task<List<Aluno>> ObterAlunosPorDisciplina(int idDisciplina);
+        Task<List<Aluno>> ObterAlunos();
+        Task<Aluno> ObterAluno(string usuarioId);
     }
 }
