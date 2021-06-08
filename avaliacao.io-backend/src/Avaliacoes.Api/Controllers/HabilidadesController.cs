@@ -1,4 +1,5 @@
 ﻿using Avaliacoes.Dominio.DTOs;
+using Avaliacoes.Dominio.DTOs.Responses;
 using Avaliacoes.Dominio.Entidades;
 using Avaliacoes.Dominio.Requests;
 using Avaliacoes.Dominio.Transacoes;
@@ -15,7 +16,8 @@ namespace Avaliacoes.Api.Controllers
     {
         private const string MSG_COMPETENCIA_NAOEXISTE = "A Competencia informada não existe.";
         private readonly IUnitOfWork _uow;
-        private string MSG_HABILIDADE_JAEXISTE = "Já existe uma habilidade com o nome";
+        private string MSG_HABILIDADE_JAEXISTE = "Já existe uma habilidade com o nome informado.";
+        private string MSG_ERRO = "Ops, algo deu errado.";
         public HabilidadesController(IUnitOfWork uow)
         {
             this._uow = uow;
@@ -36,7 +38,7 @@ namespace Avaliacoes.Api.Controllers
         {
             Habilidade habilidade = await _uow.Habilidades.ObterComDimensoes(id);
 
-            if (habilidade == null) return NotFound();
+            if (habilidade == null) return NotFound(new AppResponse(false, "Ops, algo deu errado.",new List<string> { "Nenhuma habilidade encontrada." }));
 
             return Ok(habilidade.ToDTO());
         }
@@ -74,60 +76,51 @@ namespace Avaliacoes.Api.Controllers
             var habilidade = new Habilidade(request.CompetenciaId, request.Nome, request.Descritivo, dimensoes);
 
             if (!habilidade.TaValido())
-                return BadRequest(new { sucesso = false, erros = habilidade.ObterErros() });
+                return BadRequest(new AppResponse(false, MSG_ERRO, habilidade.ObterErros()));
             else
             {
                 bool existeComMesmoNome = await _uow.Habilidades.Existe(request.CompetenciaId, request.Nome, null);
 
-                if (existeComMesmoNome) return BadRequest(new { sucesso = false, erros = new List<string> { MSG_HABILIDADE_JAEXISTE } });
+                if (existeComMesmoNome) return BadRequest(new AppResponse(false, MSG_ERRO, new List<string> { MSG_HABILIDADE_JAEXISTE }));
 
                 Competencia competencia = await _uow.Compentencias.Get(request.CompetenciaId);
 
-                if (competencia == null) return BadRequest(new { sucesso = false, erros = new List<string> { MSG_COMPETENCIA_NAOEXISTE } });
+                if (competencia == null) return BadRequest(new AppResponse(false, MSG_ERRO, new List<string> { MSG_COMPETENCIA_NAOEXISTE }));
 
                 _uow.Habilidades.Add(habilidade);
                 await _uow.CommitAsync();
 
                 var uri = Url.Action("Get", new { id = habilidade.Id });
 
-                return Created(uri, habilidade.ToDTO());
+                return Created(uri, new AppResponse(true,"Habilidade criada com sucesso.", habilidade.ToDTO()));
             }
         }
 
-       
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Put(int id, [FromBody] HabilidadeRequest request)
+        {
+            Habilidade habilidade = await _uow.Habilidades.ObterComDimensoes(id);
 
+            if (habilidade == null) return NotFound();
 
+            habilidade.Atualizar(request);
 
+            if (!habilidade.TaValido())
+                return BadRequest(new AppResponse(false, MSG_ERRO, habilidade.ObterErros()));
+            else
+            {
+                bool existeComMesmoNome = await _uow.Compentencias.Existe(request.CompetenciaId, request.Descritivo, id);
 
+                if (existeComMesmoNome) return BadRequest(new AppResponse(false, MSG_HABILIDADE_JAEXISTE, new List<string> { MSG_HABILIDADE_JAEXISTE }));
 
+                Competencia competencia = await _uow.Compentencias.Get(request.CompetenciaId);
 
+                if (competencia == null) return BadRequest(new AppResponse(false, MSG_ERRO, new List<string> { MSG_COMPETENCIA_NAOEXISTE }));
 
-        //[HttpPut("{id}")]
-        //public async Task<IActionResult> Put(int id, [FromBody] CompetenciaRequest request)
-        //{
-        //    Competencia competencia = await _uow.Compentencias.Get(id);
+                await _uow.CommitAsync();
 
-        //    if (competencia == null) return NotFound();
-
-        //    if (!competencia.TaValido())
-        //        return BadRequest(new { sucesso = false, erros = competencia.ObterErros() });
-        //    else
-        //    {
-        //        bool existeComMesmoNome = await _uow.Compentencias.Existe(request.DisciplinaId, request.Descritivo, request.Id);
-
-        //        if (existeComMesmoNome) return BadRequest(new { sucesso = false, erros = new List<string> { MSG_COMPENTENCIA_JAEXISTE } });
-
-        //        Disciplina disciplina = await _uow.Disciplinas.Get(request.DisciplinaId);
-
-        //        if (disciplina == null) return BadRequest(new { sucesso = false, erros = new List<string> { MSG_DISCIPLINA_NAOEXISTE } });
-
-        //        competencia.Atualizar(request);
-        //        await _uow.CommitAsync();
-
-        //        return Ok(new { sucesso = true, mensagem = "Competencia atualizada com sucesso." });
-        //    }
-        //}
-
-     
+                return Ok(new AppResponse(true, "Competencia atualizada com sucesso."));
+            }
+        }
     }
 }

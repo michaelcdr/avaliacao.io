@@ -15,9 +15,10 @@ namespace Avaliacoes.Api.Controllers
     public class CompetenciasController : ControllerBase
     {
         private const string MSG_DISCIPLINA_NAOEXISTE = "A Disciplina informada não existe.";
-        private readonly IUnitOfWork _uow;
+        private const string MSG_DISCIPLINA_CRIADA = "Competência criada com sucesso.";
         private string MSG_COMPENTENCIA_JAEXISTE = "Já existe uma disciplina com o nome informado.";
         private string MSG_ERRO = "Ops, algo deu errado.";
+        private readonly IUnitOfWork _uow;
 
         public CompetenciasController(IUnitOfWork uow)
         {
@@ -76,7 +77,7 @@ namespace Avaliacoes.Api.Controllers
 
                 var uri = Url.Action("Get", new { id = competencia.Id });
 
-                return Created(uri, new AppResponse(true, "Competência criada com sucesso.", competencia.ToDTO()));
+                return Created(uri, new AppResponse(true, MSG_DISCIPLINA_CRIADA, competencia.ToDTO()));
             }
         }
 

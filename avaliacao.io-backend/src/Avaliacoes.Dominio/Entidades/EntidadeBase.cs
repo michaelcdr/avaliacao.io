@@ -17,5 +17,9 @@ namespace Avaliacoes.Dominio.Entidades
         {
             _erros.Add(new Notificacao(mensagem,propriedade));
         }
+        public void LimparErros()
+        {
+            _erros = new List<Notificacao>();
+        }
     }
 }
