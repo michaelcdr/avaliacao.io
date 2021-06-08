@@ -96,6 +96,7 @@ namespace Avaliacoes.Api
             services.AddTransient<IDisciplinasRepositorio, DisciplinasRepositorio>();
             services.AddTransient<IUsuariosRepositorio, UsuariosRepositorio>();
             services.AddTransient<ICompetenciasRepositorio, CompetenciasRepositorio>();
+            services.AddTransient<IHabilidadesRepositorio, HabilidadesRepositorio>();
             services.AddTransient<IUsuarioService, UsuarioService>();
         }
 

@@ -16,6 +16,7 @@ namespace Avaliacoes.Api.Controllers
         private const string MSG_DISCIPLINA_NAOEXISTE = "A Disciplina informada não existe.";
         private readonly IUnitOfWork _uow;
         private string MSG_COMPENTENCIA_JAEXISTE = "Já existe uma disciplina com o nome";
+
         public CompetenciasController(IUnitOfWork uow)
         {
             this._uow = uow;
@@ -88,7 +89,7 @@ namespace Avaliacoes.Api.Controllers
                 return BadRequest(new { sucesso = false, erros = competencia.ObterErros() });
             else
             {
-                bool existeComMesmoNome = await _uow.Compentencias.Existe(request.DisciplinaId, request.Descritivo, request.Id);
+                bool existeComMesmoNome = await _uow.Compentencias.Existe(request.DisciplinaId, request.Descritivo, id);
 
                 if (existeComMesmoNome) return BadRequest(new { sucesso = false, erros = new List<string> { MSG_COMPENTENCIA_JAEXISTE } });
                 

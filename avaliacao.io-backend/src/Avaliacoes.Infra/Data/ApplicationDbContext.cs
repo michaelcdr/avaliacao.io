@@ -26,6 +26,8 @@ namespace Avaliacoes.Infra.Data
 
             builder.Entity<Disciplina>().Ignore(e => e._erros);
             builder.Entity<Competencia>().Ignore(e => e._erros);
+            builder.Entity<Habilidade>().Ignore(e => e._erros);
+            builder.Entity<Dimensao>().Ignore(e => e._erros);
 
             builder.ApplyConfiguration(new UsuarioMap());
             builder.ApplyConfiguration(new TipoUsuarioMap());
