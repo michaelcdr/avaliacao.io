@@ -26,6 +26,9 @@ namespace Avaliacoes.Dominio.Entidades
             if (string.IsNullOrEmpty(this.Nome))
                 this.AdicionarErro("Informe o nome.", "Nome");
 
+            if (this.DisciplinaId == 0)
+                this.AdicionarErro("Informe a disciplina.", "DisciplinaId");
+
             return this._erros.Count == 0;
         }
 

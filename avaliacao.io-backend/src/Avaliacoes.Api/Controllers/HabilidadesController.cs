@@ -77,7 +77,7 @@ namespace Avaliacoes.Api.Controllers
                 return BadRequest(new { sucesso = false, erros = habilidade.ObterErros() });
             else
             {
-                bool existeComMesmoNome = await _uow.Habilidades.Existe(request.CompetenciaId, request.Descritivo, null);
+                bool existeComMesmoNome = await _uow.Habilidades.Existe(request.CompetenciaId, request.Nome, null);
 
                 if (existeComMesmoNome) return BadRequest(new { sucesso = false, erros = new List<string> { MSG_HABILIDADE_JAEXISTE } });
 

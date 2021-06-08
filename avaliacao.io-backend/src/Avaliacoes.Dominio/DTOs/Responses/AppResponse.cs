@@ -4,11 +4,11 @@ namespace Avaliacoes.Dominio.DTOs.Responses
 {
     public class AppResponse
     {
-        public List<string> Erros { get; set; }
-        public bool Sucesso { get; set; }
-        public string Mensagem { get; set; }
-
-        public AppResponse(bool sucesso, string mensagem, List<string> erros)
+        public List<string> Erros { get; private set; }
+        public bool Sucesso { get; private set; }
+        public string Mensagem { get; private set; }
+        public object Dados { get; private set; }
+        public AppResponse(string mensagem, bool sucesso,  List<string> erros)
         {
             this.Sucesso = sucesso;
             this.Mensagem = mensagem;
@@ -19,6 +19,12 @@ namespace Avaliacoes.Dominio.DTOs.Responses
         {
             this.Sucesso = sucesso;
             this.Mensagem = mensagem;
+        }
+        public AppResponse(bool sucesso, string mensagem, object dados)
+        {
+            this.Sucesso = sucesso;
+            this.Mensagem = mensagem;
+            this.Dados = dados;
         }
     }
 }
