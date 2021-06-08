@@ -87,6 +87,8 @@ namespace Avaliacoes.Api.Controllers
 
             if (competencia == null) return NotFound(new AppResponse(true, "A competencia informada não existe."));
 
+            competencia.Atualizar(request);
+
             if (!competencia.TaValido())
                 return BadRequest(new AppResponse (false, "Ocorreram erros de validação.", competencia.ObterErros()));
             else
@@ -99,10 +101,9 @@ namespace Avaliacoes.Api.Controllers
                 
                 if (disciplina == null) return BadRequest(new AppResponse(MSG_ERRO, false, new List<string> { MSG_DISCIPLINA_NAOEXISTE } ));
 
-                competencia.Atualizar(request);
                 await _uow.CommitAsync();
 
-                return Ok(new AppResponse(true, "Competencia atualizada com sucesso."));
+                return Ok(new AppResponse(true, "Competência atualizada com sucesso.",competencia.ToDTO()));
             }
         }
 
