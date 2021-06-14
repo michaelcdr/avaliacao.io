@@ -24,8 +24,13 @@ namespace Avaliacoes.Api.Controllers
             this._signInManager = signInManager;
         }
 
+        /// <summary>
+        /// Gera um token para usar na autenticação da API
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> Token(LoginModel model)
+        public async Task<IActionResult> GerarToken(LoginModel model)
         {
             if (ModelState.IsValid)
             {

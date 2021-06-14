@@ -1,7 +1,6 @@
 ﻿using Avaliacoes.Aplicacao.Helpers;
 using Avaliacoes.Dominio.DTOs.Responses;
 using Avaliacoes.Dominio.Entidades;
-using Avaliacoes.Dominio.InputModels;
 using Avaliacoes.Dominio.Requests;
 using Avaliacoes.Dominio.Transacoes;
 using Microsoft.AspNetCore.Identity;

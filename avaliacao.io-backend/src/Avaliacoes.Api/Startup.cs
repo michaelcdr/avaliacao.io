@@ -85,7 +85,8 @@ namespace Avaliacoes.Api
                 options.Password.RequireLowercase = false;
                 options.Password.RequiredUniqueChars = 0;
                 options.User.RequireUniqueEmail = false;
-            });
+                options.Stores.MaxLengthForKeys = 85;
+            });  
 
             services.AddIdentity<Usuario, TipoUsuario>()
               .AddEntityFrameworkStores<ApplicationDbContext>()
