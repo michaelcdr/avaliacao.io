@@ -94,12 +94,12 @@ namespace Avaliacoes.Api.Controllers
 
             if (disciplina == null) return NotFound();
 
+            disciplina.Atualizar(disciplinaDTO);
+
             if (!disciplina.TaValido())
                 return BadRequest(new { erros = disciplina.ObterErros() });
             else
             {
-                disciplina.Atualizar(disciplinaDTO);
-
                 List<Professor> professorsInformados = await _uow.Usuarios.ObterProfessores(disciplinaDTO.Professores);
                 disciplina.AdicionarProfessores(professorsInformados);
                 

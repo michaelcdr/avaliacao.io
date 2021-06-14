@@ -8,10 +8,10 @@ namespace Avaliacoes.Dominio.Entidades
     {
         private List<string> _erros { get; set; }
 
-        public string Nome { get; set; }        
         public Professor Professor { get; set; }
         public Aluno Aluno { get; set; }
         public Coordenador Coordenador { get; set; }
+        public string Nome { get; set; }        
 
         public Usuario(string nome, string userName, string email)
         {
@@ -50,10 +50,5 @@ namespace Avaliacoes.Dominio.Entidades
         {
             return this._erros;
         }
-    }
-
-    public class TipoUsuario : IdentityRole<string>
-    {
-
     }
 }

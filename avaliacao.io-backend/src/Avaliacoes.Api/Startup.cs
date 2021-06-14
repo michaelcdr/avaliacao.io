@@ -75,7 +75,7 @@ namespace Avaliacoes.Api
                 };
             });
 
-            // definições de regras de seguraça para a password
+            // definições de regras de segurança para a password
             services.Configure<IdentityOptions>(options =>
             {
                 options.Password.RequireDigit = false;
