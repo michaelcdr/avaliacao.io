@@ -16,9 +16,10 @@ namespace Avaliacoes.Dominio.Entidades
         public List<Aluno> Alunos { get; set; }
         public List<Competencia> Competencias { get; set; }
         
-        public Disciplina(string nome, string descritivo)
+        public Disciplina(string nome, string descritivo, string horario)
         {
             this.Nome = nome;
+            this.Horario = horario;
             this.Descritivo = descritivo;
         }
 

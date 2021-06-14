@@ -58,7 +58,7 @@ namespace Avaliacoes.Api.Controllers
         [HttpPost]
         public async Task<ActionResult> Post([FromBody] DisciplinaRequest request)
         {
-            var disciplina = new Disciplina(request.Nome, request.Descritivo);
+            var disciplina = new Disciplina(request.Nome, request.Descritivo, request.Horario);
 
             if (!disciplina.TaValido())
                 return BadRequest(new { erros = disciplina.ObterErros() });
