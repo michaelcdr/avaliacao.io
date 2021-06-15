@@ -12,5 +12,6 @@ namespace Avaliacoes.Aplicacao.Services
         Task<AppResponse> CriarAluno(CriarAlunoRequest request);
         Task<AppResponse> AtualizarProfessor(AtualizarProfessorRequest request);
         Task<AppResponse> VincularDisciplinasEmAluno(VincularAlunoDisciplinasRequest request);
+        Task<AppResponse> AtualizarAluno(AtualizarAlunoRequest request);
     }
 }

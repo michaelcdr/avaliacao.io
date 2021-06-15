@@ -87,5 +87,11 @@ namespace Avaliacoes.Dominio.Entidades
             this.Horario = disciplinaDTO.Horario;
             this.Professores = new List<Professor>();
         }
+
+        public void RemoverAluno(Aluno aluno)
+        {
+            if (this.Alunos != null)
+                this.Alunos.Remove(aluno);
+        }
     }
 }

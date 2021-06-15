@@ -43,12 +43,23 @@ namespace Avaliacoes.Dominio.Entidades
                 retorno = false;
             }
 
+            if (string.IsNullOrEmpty(Email))
+            {
+                _erros.Add("E-mail não informado.");
+                retorno = false;
+            }
+
             return retorno;
         }
 
         public List<string> ObterErros()
         {
             return this._erros;
+        }
+
+        public void AdicionarErro(string erro)
+        {
+            this._erros.Add(erro);
         }
     }
 }

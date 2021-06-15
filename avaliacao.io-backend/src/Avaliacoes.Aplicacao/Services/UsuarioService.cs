@@ -1,4 +1,5 @@
 ﻿using Avaliacoes.Aplicacao.Helpers;
+using Avaliacoes.Dominio.DTOs;
 using Avaliacoes.Dominio.DTOs.Responses;
 using Avaliacoes.Dominio.Entidades;
 using Avaliacoes.Dominio.Requests;
@@ -15,10 +16,12 @@ namespace Avaliacoes.Aplicacao.Services
         private const string ERRO_BASE = "Não foi possivel criar o professor.";
         private const string ERRO_CRIAR_COORDENADOR = "Não foi possivel criar o professor.";
         private const string ERRO_CRIAR_ALUNO = "Não foi possivel criar o aluno.";
+        private const string ERRO_ATUALIZAR_ALUNO = "Não foi possivel atualizar o aluno.";
         private const string MSG_CRIAR_COORDENADOR = "Coordenador criado com sucesso.";
         private const string MSG_CRIAR_ALUNO = "Aluno criado com sucesso.";
         private const string MSG_SUCESSO = "Professor criado com sucesso.";
         private const string MSG_UPDATE_SUCESSO = "Professor atualizado com sucesso.";
+        private const string MSG_UPDATE_ALUNO_SUCESSO = "Aluno atualizado com sucesso.";
         private const string ROLE_PROFESSOR = "Professor";
         private const string ROLE_COORDENADOR = "Coordenador";
         private const string ROLE_ALUNO = "Aluno";
@@ -52,7 +55,8 @@ namespace Avaliacoes.Aplicacao.Services
 
                 await VincularDisciplinasEmAluno(new VincularAlunoDisciplinasRequest(request.Disciplinas, usuario.Id));
             }
-            return new AppResponse(true, MSG_CRIAR_ALUNO);
+
+            return new AppResponse(true, MSG_CRIAR_ALUNO, new AlunoComDisciplinaDTO(usuario.Aluno));
         }
 
         public async Task<AppResponse> VincularDisciplinasEmAluno(VincularAlunoDisciplinasRequest request)
@@ -170,6 +174,54 @@ namespace Avaliacoes.Aplicacao.Services
             await _uow.CommitAsync();
 
             return new AppResponse(true, MSG_UPDATE_SUCESSO);
+        }
+
+        public async Task<AppResponse> AtualizarAluno(AtualizarAlunoRequest request)
+        {
+            Aluno aluno = await _uow.Usuarios.ObterAluno(request.Id);
+
+            if (string.IsNullOrEmpty(request.Senha))
+                aluno.Usuario.AdicionarErro("Informe a nova senha.");
+            
+            if (string.IsNullOrEmpty(request.SenhaAntiga))
+                aluno.Usuario.AdicionarErro("Informe a senha antiga.");
+
+            aluno.Atualizar(request);
+
+            if (!aluno.Usuario.TaValido()) return new AppResponse(false, ERRO_ATUALIZAR_ALUNO, aluno.Usuario.ObterErros());
+            
+            // vinculando disciplinas no aluno
+            if (request.Disciplinas != null)
+            {
+                List<Disciplina> disciplinasInformadas = await _uow.Disciplinas.ObterTodas(request.Disciplinas);
+
+                if (disciplinasInformadas != null)
+                {
+                    foreach (Disciplina disciplinaInformada in disciplinasInformadas)
+                        if (!aluno.Disciplinas.Any(e => e.Id == disciplinaInformada.Id))
+                            disciplinaInformada.AdicionaAluno(aluno);
+
+                    var idsRemover = aluno.Disciplinas.Select(e => e.Id).ToList().Except(request.Disciplinas).ToList();
+
+                    List<Disciplina> disciplinasRemover = aluno.Disciplinas.Where(e => idsRemover.Contains(e.Id)).ToList();
+
+                    foreach (var disciplinaInformada in disciplinasRemover)                    
+                        disciplinaInformada.RemoverAluno(aluno);
+                }
+            }
+
+            await _uow.CommitAsync();
+
+            IdentityResult result = await _userManager.ChangePasswordAsync(aluno.Usuario, request.SenhaAntiga, request.Senha);
+
+            if (!result.Succeeded)
+            {
+                List<string> erros = result.Errors.Select(e => e.Code + " - " + e.Description).ToList();
+
+                return new AppResponse("Informações de aluno atualizadas porem não foi possivel atualizar a senha.", false, erros);
+            }
+
+            return new AppResponse(true, MSG_UPDATE_ALUNO_SUCESSO, new AlunoComDisciplinaDTO(aluno));
         }
     }
 }

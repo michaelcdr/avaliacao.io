@@ -17,6 +17,7 @@ namespace Avaliacoes.Api.Controllers
     {
         private readonly IUsuarioService _usuarioServico;
         private readonly IUnitOfWork _uow;
+
         public AlunosController(IUsuarioService usuarioServico, IUnitOfWork uow)
         {
             this._usuarioServico = usuarioServico;
@@ -27,6 +28,16 @@ namespace Avaliacoes.Api.Controllers
         public async Task<IActionResult> Post([FromBody] CriarAlunoRequest request)
         {
             AppResponse resposta = await _usuarioServico.CriarAluno(request);
+
+            if (resposta.Sucesso) return Ok(resposta);
+
+            return BadRequest(resposta);
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> Put([FromBody] AtualizarAlunoRequest request)
+        {
+            AppResponse resposta = await _usuarioServico.AtualizarAluno(request);
 
             if (resposta.Sucesso) return Ok(resposta);
 
@@ -65,6 +76,18 @@ namespace Avaliacoes.Api.Controllers
             if (resposta.Sucesso) return Ok(resposta);
 
             return BadRequest(resposta);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(string id)
+        {
+            Usuario usuario = await _uow.Usuarios.Obter("Aluno", id);
+
+            if (usuario == null) return NotFound();
+
+            _uow.Usuarios.Delete(usuario);
+            await _uow.CommitAsync();
+            return NoContent();
         }
     }
 }
