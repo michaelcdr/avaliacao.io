@@ -69,9 +69,12 @@ namespace Avaliacoes.Api.Controllers
         [HttpPost]
         public async Task<ActionResult> Post([FromBody] HabilidadeRequest request)
         {
-            var dimensoes = request.Dimensoes != null
-                ? request.Dimensoes.Select(e => new Dimensao { Codigo = e.Codigo, Nome = e.Nome }).ToList()
-                : new List<Dimensao>();
+            var dimensoes = new List<Dimensao>() 
+            {
+                new Dimensao{ Nome = "Conceitual", Codigo = 1 },
+                new Dimensao{ Nome = "Procedimental", Codigo = 2 },
+                new Dimensao{ Nome = "Atitudinal", Codigo = 3 }
+            };
 
             var habilidade = new Habilidade(request.CompetenciaId, request.Nome, request.Descritivo, dimensoes);
 

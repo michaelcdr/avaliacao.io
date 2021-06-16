@@ -64,9 +64,8 @@ namespace Avaliacoes.Dominio.Entidades
         {
             this.CompetenciaId = request.CompetenciaId;
             this.Descritivo = request.Descritivo;
-            this.Nome = request.Nome;
-            this.Dimensoes = request.Dimensoes.Select(item => new Dimensao { HabilidadeId = this.Id, Nome = item.Nome, Codigo = item.Codigo }).ToList() ?? new List<Dimensao>();
-            
+            this.Nome = request.Nome; 
+
             Validar();
         }
     }

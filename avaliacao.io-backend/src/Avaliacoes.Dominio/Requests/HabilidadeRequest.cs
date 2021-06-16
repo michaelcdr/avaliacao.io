@@ -8,6 +8,5 @@ namespace Avaliacoes.Dominio.Requests
         public string Descritivo { get; set; }
         public int CompetenciaId { get; set; }
 
-        public List<DimensaoRequest> Dimensoes { get; set; }
     }
 }
