@@ -13,7 +13,12 @@ namespace Avaliacoes.Aplicacao.Helpers
         {
             var erros = new List<string>();
             foreach (var item in identityResult.Errors)
-                erros.Add(item.Code+ " - " + item.Description);
+                if ("PasswordMismatch" == item.Code)
+                    erros.Add("As senhas não conferem.");
+                else if ("DuplicateUserName" == item.Code)
+                    erros.Add("O usuário informado está em uso.");
+                else
+                    erros.Add($"{item.Code} - {item.Description}");
             return erros;
         }
     }

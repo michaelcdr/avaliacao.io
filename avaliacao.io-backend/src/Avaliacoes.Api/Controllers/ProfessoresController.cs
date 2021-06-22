@@ -73,7 +73,7 @@ namespace Avaliacoes.Api.Controllers
         {
             Usuario usuario = await _uow.Usuarios.Obter("Professor", id);
 
-            if (usuario == null) return NotFound();
+            if (usuario == null) return NotFound(new AppResponse(false, "Professor não encontrado."));
 
             _uow.Usuarios.Delete(usuario);
             await _uow.CommitAsync();

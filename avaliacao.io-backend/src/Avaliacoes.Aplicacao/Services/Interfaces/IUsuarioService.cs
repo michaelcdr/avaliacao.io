@@ -13,5 +13,6 @@ namespace Avaliacoes.Aplicacao.Services
         Task<AppResponse> AtualizarProfessor(AtualizarProfessorRequest request);
         Task<AppResponse> VincularDisciplinasEmAluno(VincularAlunoDisciplinasRequest request);
         Task<AppResponse> AtualizarAluno(AtualizarAlunoRequest request);
+        Task<AppResponse> AtualizarCoordenador(AtualizarCoordenadorRequest request);
     }
 }

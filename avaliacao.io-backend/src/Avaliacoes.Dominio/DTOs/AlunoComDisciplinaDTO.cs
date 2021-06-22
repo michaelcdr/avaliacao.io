@@ -32,4 +32,25 @@ namespace Avaliacoes.Dominio.DTOs
         }
 
     }
+
+    public class CoordenadorDTO
+    {
+        public string Id { get; set; }
+        public string Nome { get; set; }
+        public string Email { get; set; }
+        public string UserName { get; set; }
+
+        public CoordenadorDTO()
+        {
+
+        }
+
+        public CoordenadorDTO(Coordenador coordenador)
+        {
+            this.Id = coordenador.Usuario.Id;
+            this.Email = coordenador.Usuario.Email;
+            this.UserName = coordenador.Usuario.UserName;
+            this.Nome = coordenador.Usuario.Nome;
+        }
+    }
 }

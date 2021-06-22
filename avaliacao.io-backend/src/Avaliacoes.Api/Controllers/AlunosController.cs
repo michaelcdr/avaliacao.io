@@ -2,7 +2,6 @@
 using Avaliacoes.Dominio.DTOs;
 using Avaliacoes.Dominio.DTOs.Responses;
 using Avaliacoes.Dominio.Entidades;
-using Avaliacoes.Dominio.InputModels;
 using Avaliacoes.Dominio.Requests;
 using Avaliacoes.Dominio.Transacoes;
 using Microsoft.AspNetCore.Mvc;
@@ -83,7 +82,7 @@ namespace Avaliacoes.Api.Controllers
         {
             Usuario usuario = await _uow.Usuarios.Obter("Aluno", id);
 
-            if (usuario == null) return NotFound();
+            if (usuario == null) return NotFound(new AppResponse(false, "Aluno não encontrado."));
 
             _uow.Usuarios.Delete(usuario);
             await _uow.CommitAsync();

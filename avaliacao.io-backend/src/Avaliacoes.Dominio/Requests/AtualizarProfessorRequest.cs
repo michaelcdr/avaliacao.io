@@ -9,5 +9,7 @@ namespace Avaliacoes.Dominio.Requests
         public string Email { get; set; }
         public List<int> Disciplinas { get; set; }
         public string Id { get; set; }
+        public string Senha { get; set; }
+        public string SenhaAntiga { get; set; }
     }
 }

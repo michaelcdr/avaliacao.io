@@ -12,6 +12,7 @@ namespace Avaliacoes.Infra.Repositorios.EF
     {
         private const string ROLENAME_PROFESSOR = "Professor";
         private const string ROLENAME_ALUNO = "Aluno";
+        private const string ROLENAME_COORDENADOR = "Coordenador";
 
         public UsuariosRepositorio(ApplicationDbContext context) : base(context)
         {
@@ -70,6 +71,12 @@ namespace Avaliacoes.Infra.Repositorios.EF
             return usuario.Professor;
         }
 
+        public async Task<Coordenador> ObterCoordenador(string id)
+        {
+            Usuario usuario = await Obter(ROLENAME_COORDENADOR, id);
+            return usuario.Coordenador;
+        }
+
         public async Task<List<Professor>> ObterProfessores(List<string> idsUsuarios)
         {
             var usuarios = await (from u in ApplicationDbContext.Usuarios
@@ -94,6 +101,7 @@ namespace Avaliacoes.Infra.Repositorios.EF
                                      where r.Name == tipoUsuario && u.Id == usuarioId
                                      select u).Include(e => e.Professor).ThenInclude(e => e.Disciplinas)
                                               .Include(e => e.Aluno).ThenInclude(e => e.Disciplinas)
+                                              .Include(e => e.Coordenador)
                                               .SingleOrDefaultAsync();
 
             return usuario;
@@ -103,6 +111,22 @@ namespace Avaliacoes.Infra.Repositorios.EF
         {
             Usuario usuario = await Obter(ROLENAME_ALUNO, usuarioId);
             return usuario.Aluno; 
+        }
+
+        public async Task<List<Coordenador>> ObterCoordenadores()
+        {
+            var usuarios = await (from u in ApplicationDbContext.Usuarios
+                                  join ru in ApplicationDbContext.UserRoles on u.Id equals ru.UserId
+                                  join r in ApplicationDbContext.Roles on ru.RoleId equals r.Id
+                                  where r.Name == ROLENAME_COORDENADOR  
+                                  select u).Include(e => e.Coordenador).ToListAsync();
+
+            var coordenadores = new List<Coordenador>();
+
+            if (usuarios != null)
+                coordenadores = usuarios.Select(e => e.Coordenador).Distinct().ToList();
+
+            return coordenadores;
         }
     }
 }

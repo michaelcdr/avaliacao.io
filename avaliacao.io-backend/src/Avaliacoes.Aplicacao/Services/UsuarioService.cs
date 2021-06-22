@@ -25,6 +25,7 @@ namespace Avaliacoes.Aplicacao.Services
         private const string ROLE_PROFESSOR = "Professor";
         private const string ROLE_COORDENADOR = "Coordenador";
         private const string ROLE_ALUNO = "Aluno";
+        private const string MSG_ERRO_PWD_COORDENADOR = "Informações de coordenador atualizadas porem não foi possivel atualizar a senha.";
         private readonly UserManager<Usuario> _userManager;
         private readonly IUnitOfWork _uow;
 
@@ -134,12 +135,38 @@ namespace Avaliacoes.Aplicacao.Services
             return new AppResponse(true, MSG_SUCESSO);
         }
 
+        public async Task<AppResponse> AtualizarCoordenador(AtualizarCoordenadorRequest request)
+        {
+            Coordenador coordenador = await _uow.Usuarios.ObterCoordenador(request.Id);
+
+            if (string.IsNullOrEmpty(request.Senha)) coordenador.Usuario.AdicionarErro("Informe a nova senha.");
+
+            if (string.IsNullOrEmpty(request.SenhaAntiga)) coordenador.Usuario.AdicionarErro("Informe a senha antiga.");
+
+            if (!coordenador.Usuario.TaValido()) return new AppResponse(false, ERRO_BASE, coordenador.Usuario.ObterErros());
+
+            coordenador.Atualizar(request); 
+            await _uow.CommitAsync();
+
+            IdentityResult result = await _userManager.ChangePasswordAsync(coordenador.Usuario, request.SenhaAntiga, request.Senha);
+
+            if (!result.Succeeded)
+                return new AppResponse(MSG_ERRO_PWD_COORDENADOR, false, IdentityHelper.ObterErros(result) );
+
+            return new AppResponse(true, MSG_UPDATE_SUCESSO);
+        }
+
         public async Task<AppResponse> AtualizarProfessor(AtualizarProfessorRequest request)
         {
             Professor professor = await _uow.Usuarios.ObterProfessor(request.Id);
 
-            if (!professor.Usuario.TaValido())
-                return new AppResponse(false, ERRO_BASE, professor.Usuario.ObterErros());
+            if (string.IsNullOrEmpty(request.Senha))
+                professor.Usuario.AdicionarErro("Informe a nova senha.");
+
+            if (string.IsNullOrEmpty(request.SenhaAntiga))
+                professor.Usuario.AdicionarErro("Informe a senha antiga.");
+
+            if (!professor.Usuario.TaValido()) return new AppResponse(false, ERRO_BASE, professor.Usuario.ObterErros());
 
             professor.Usuario.Nome = request.Nome;
             professor.Usuario.Email = request.Email;
@@ -172,6 +199,11 @@ namespace Avaliacoes.Aplicacao.Services
             }
 
             await _uow.CommitAsync();
+
+            IdentityResult result = await _userManager.ChangePasswordAsync(professor.Usuario, request.SenhaAntiga, request.Senha);
+
+            if (!result.Succeeded)
+                return new AppResponse("Informações de professor atualizadas porem não foi possivel atualizar a senha.", false, IdentityHelper.ObterErros(result));
 
             return new AppResponse(true, MSG_UPDATE_SUCESSO);
         }
@@ -215,11 +247,7 @@ namespace Avaliacoes.Aplicacao.Services
             IdentityResult result = await _userManager.ChangePasswordAsync(aluno.Usuario, request.SenhaAntiga, request.Senha);
 
             if (!result.Succeeded)
-            {
-                List<string> erros = result.Errors.Select(e => e.Code + " - " + e.Description).ToList();
-
-                return new AppResponse("Informações de aluno atualizadas porem não foi possivel atualizar a senha.", false, erros);
-            }
+                return new AppResponse("Informações de aluno atualizadas porem não foi possivel atualizar a senha.", false, IdentityHelper.ObterErros(result));
 
             return new AppResponse(true, MSG_UPDATE_ALUNO_SUCESSO, new AlunoComDisciplinaDTO(aluno));
         }
