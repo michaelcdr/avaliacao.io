@@ -15,5 +15,7 @@ namespace Avaliacoes.Dominio.Repositorios
         Task<Coordenador> ObterCoordenador(string id);
         Task<Professor> ObterProfessor(string id);
         Task<List<Coordenador>> ObterCoordenadores();
+        void AvaliarAluno(Avaliacao avaliacao);
+        Task<Avaliacao> ObterAvaliacaoAluno(int idDimensao, int alunoId, string semestre);
     }
 }

@@ -88,5 +88,15 @@ namespace Avaliacoes.Api.Controllers
             await _uow.CommitAsync();
             return NoContent();
         }
+
+        [HttpPost("Avaliar")]
+        public async Task<IActionResult> Avaliar([FromBody] AvaliarAluno request)
+        {
+            AppResponse resposta = await _usuarioServico.AvaliarAluno(request);
+
+            if (resposta.Sucesso) return Ok(resposta);
+
+            return BadRequest(resposta);
+        }
     }
 }

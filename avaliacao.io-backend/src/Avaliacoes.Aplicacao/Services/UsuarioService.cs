@@ -25,6 +25,8 @@ namespace Avaliacoes.Aplicacao.Services
         private const string ROLE_PROFESSOR = "Professor";
         private const string ROLE_COORDENADOR = "Coordenador";
         private const string ROLE_ALUNO = "Aluno";
+        private const string MSG_ERRO_UPDATE_ALUNO = "Informações de aluno atualizadas porem não foi possivel atualizar a senha.";
+        private const string MSG_ERRO_UPDATE_PROF = "Informações de professor atualizadas porem não foi possivel atualizar a senha.";
         private const string MSG_ERRO_PWD_COORDENADOR = "Informações de coordenador atualizadas porem não foi possivel atualizar a senha.";
         private readonly UserManager<Usuario> _userManager;
         private readonly IUnitOfWork _uow;
@@ -203,11 +205,11 @@ namespace Avaliacoes.Aplicacao.Services
             IdentityResult result = await _userManager.ChangePasswordAsync(professor.Usuario, request.SenhaAntiga, request.Senha);
 
             if (!result.Succeeded)
-                return new AppResponse("Informações de professor atualizadas porem não foi possivel atualizar a senha.", false, IdentityHelper.ObterErros(result));
+                return new AppResponse(MSG_ERRO_UPDATE_PROF, false, IdentityHelper.ObterErros(result));
 
             return new AppResponse(true, MSG_UPDATE_SUCESSO);
         }
-
+        
         public async Task<AppResponse> AtualizarAluno(AtualizarAlunoRequest request)
         {
             Aluno aluno = await _uow.Usuarios.ObterAluno(request.Id);
@@ -247,9 +249,39 @@ namespace Avaliacoes.Aplicacao.Services
             IdentityResult result = await _userManager.ChangePasswordAsync(aluno.Usuario, request.SenhaAntiga, request.Senha);
 
             if (!result.Succeeded)
-                return new AppResponse("Informações de aluno atualizadas porem não foi possivel atualizar a senha.", false, IdentityHelper.ObterErros(result));
+                return new AppResponse(MSG_ERRO_UPDATE_ALUNO, false, IdentityHelper.ObterErros(result));
 
             return new AppResponse(true, MSG_UPDATE_ALUNO_SUCESSO, new AlunoComDisciplinaDTO(aluno));
+        }
+        
+        public async Task<AppResponse> AvaliarAluno(AvaliarAluno request)
+        {
+            Aluno aluno = await _uow.Usuarios.ObterAluno(request.UsuarioId);
+
+            if (aluno == null) return new AppResponse(false, "Aluno não encontrado.");
+
+            Dimensao dimensao = await _uow.Dimensoes.Get(request.IdDimensao);
+
+            if (dimensao == null) return new AppResponse(false, "Dimensão não encontrada.");
+
+            Avaliacao avaliacao = await _uow.Usuarios.ObterAvaliacaoAluno(request.IdDimensao, aluno.Id, request.Semestre);
+
+            if (avaliacao == null) 
+            {
+                avaliacao = new Avaliacao(request.IdDimensao, aluno.Id, request.Nota, request.Semestre);
+
+                if (!avaliacao.TaValido()) return new AppResponse(false, "Não foi possivel avaliar o aluno.", avaliacao.ObterErros());
+
+                _uow.Usuarios.AvaliarAluno(avaliacao);
+                await _uow.CommitAsync(); 
+            }
+            else
+            {
+                avaliacao.AtualizarNota(request.Nota);
+                await _uow.CommitAsync();
+            }
+
+            return new AppResponse(true, "Aluno avaliado com sucesso.");
         }
     }
 }

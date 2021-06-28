@@ -12,6 +12,7 @@ namespace Avaliacoes.Infra.Data
         public DbSet<Competencia> Competencias { get; set; }
         public DbSet<Habilidade> Habilidades { get; set; }
         public DbSet<Dimensao> Dimensoes { get; set; }
+        public DbSet<Avaliacao> Avaliacoes { get; set; }
 
         //public ApplicationDbContext() {       } // SqlServer Tem que ter
 
@@ -28,6 +29,7 @@ namespace Avaliacoes.Infra.Data
             builder.Entity<Competencia>().Ignore(e => e._erros);
             builder.Entity<Habilidade>().Ignore(e => e._erros);
             builder.Entity<Dimensao>().Ignore(e => e._erros);
+            builder.Entity<Avaliacao>().Ignore(e => e._erros);
 
             builder.ApplyConfiguration(new UsuarioMap());
             builder.ApplyConfiguration(new TipoUsuarioMap());

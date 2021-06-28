@@ -11,4 +11,9 @@ namespace Avaliacoes.Dominio.Repositorios
         Task<IList<Habilidade>> ObterTodasComDimensoes();
         Task<Habilidade> ObterComDimensoes(int habilidadeId);
     }
+
+    public interface IDimensoesRepositorio : IRepositorio<Dimensao>
+    {
+
+    }
 }

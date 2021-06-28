@@ -11,7 +11,7 @@ namespace Avaliacoes.Dominio.Entidades
         public string UsuarioId { get; set; }
         public Usuario Usuario { get; set; }
         public List<Disciplina> Disciplinas { get; set; }
-
+        public List<Avaliacao> Avaliacoes { get; set; }
         public void Atualizar(AtualizarAlunoRequest request)
         {
             Usuario.Nome = request.Nome;

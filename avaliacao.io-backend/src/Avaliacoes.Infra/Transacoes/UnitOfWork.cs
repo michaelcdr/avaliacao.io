@@ -13,6 +13,8 @@ namespace Avaliacoes.Infra.Transacoes
         public IUsuariosRepositorio Usuarios { get; private set; }
         public ICompetenciasRepositorio Compentencias { get; private set; }
         public IHabilidadesRepositorio Habilidades { get; private set; }
+        public IDimensoesRepositorio Dimensoes { get; private set; }
+
         public  async Task<int> CommitAsync()
         {
             return await _context.SaveChangesAsync();
@@ -24,13 +26,15 @@ namespace Avaliacoes.Infra.Transacoes
             IDisciplinasRepositorio disciplinasRepositorio,
             IUsuariosRepositorio usuariosRepositorio,
             ICompetenciasRepositorio competenciasRepositorio,
-            IHabilidadesRepositorio habilidadesRepositorio)
+            IHabilidadesRepositorio habilidadesRepositorio,
+            IDimensoesRepositorio dimensoesRepositorio)
         {
             this._context = context;
             this.Disciplinas = disciplinasRepositorio;
             this.Usuarios = usuariosRepositorio;
             this.Compentencias = competenciasRepositorio;
             this.Habilidades = habilidadesRepositorio;
+            this.Dimensoes = dimensoesRepositorio;
         }
     }
 }

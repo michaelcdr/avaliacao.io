@@ -15,6 +15,8 @@ namespace Avaliacoes.Infra.Data.EF.TableMaping
             builder.HasMany(e => e.Disciplinas)
                    .WithMany(e => e.Alunos)
                    .UsingEntity(j => j.ToTable("DisciplinasAlunos"));
+
+            builder.HasMany(e => e.Avaliacoes).WithOne(e => e.Aluno);
         }
     }
 }

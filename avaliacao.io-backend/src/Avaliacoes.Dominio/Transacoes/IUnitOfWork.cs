@@ -9,6 +9,7 @@ namespace Avaliacoes.Dominio.Transacoes
         ICompetenciasRepositorio Compentencias { get; }
         IHabilidadesRepositorio Habilidades { get;  }
         IUsuariosRepositorio Usuarios { get; }
+        IDimensoesRepositorio Dimensoes { get; }
         Task<int> CommitAsync();
     }
 }

@@ -128,5 +128,15 @@ namespace Avaliacoes.Infra.Repositorios.EF
 
             return coordenadores;
         }
+
+        public void AvaliarAluno(Avaliacao avaliacao)
+        {
+            ApplicationDbContext.Avaliacoes.Add(avaliacao);
+        }
+
+        public async Task<Avaliacao> ObterAvaliacaoAluno(int dimensaoId, int alunoId, string semestre)
+        {
+            return await ApplicationDbContext.Avaliacoes.SingleOrDefaultAsync(e => e.DimensaoId == dimensaoId && e.AlunoId == alunoId && e.Semestre == semestre);
+        }
     }
 }
