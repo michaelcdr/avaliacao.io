@@ -89,6 +89,11 @@ namespace Avaliacoes.Api.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Endpoint responsavel por avaliar a dimensão de uma habilidade de um aluno, a nota deve ser de 0 a 10, quando ja existir uma avaliação registrada para o mesmo semestre e aluno a mesma será atualizada. 
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpPost("Avaliar")]
         public async Task<IActionResult> Avaliar([FromBody] AvaliarAluno request)
         {

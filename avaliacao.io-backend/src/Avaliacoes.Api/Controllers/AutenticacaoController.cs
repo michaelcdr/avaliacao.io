@@ -29,7 +29,7 @@ namespace Avaliacoes.Api.Controllers
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        [HttpPost]
+        [HttpPost("Autenticar")]
         public async Task<IActionResult> GerarToken(LoginModel model)
         {
             if (ModelState.IsValid)
