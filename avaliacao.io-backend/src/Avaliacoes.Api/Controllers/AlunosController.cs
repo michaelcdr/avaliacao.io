@@ -106,11 +106,21 @@ namespace Avaliacoes.Api.Controllers
             return BadRequest(resposta);
         }
 
-        [Authorize(Roles = "Professor")]
+        //[Authorize(Roles = "Professor")]
         [HttpGet("ObterGradeCurricular/{usuarioId}")]
         public async Task<IActionResult> ObterGradeCurricular(string usuarioId)
         {
             AppResponse resposta = await _usuarioServico.ObterGradeCurricular(usuarioId, User.Identity.Name);
+
+            if (resposta.Sucesso) return Ok(resposta);
+
+            return BadRequest(resposta);
+        }
+
+        [HttpGet("ObterNotas/{usuarioId}")]
+        public async Task<IActionResult> ObterNotas(string usuarioId)
+        {
+            AppResponse resposta = await _usuarioServico.ObterNotas(usuarioId, User.Identity.Name);
 
             if (resposta.Sucesso) return Ok(resposta);
 

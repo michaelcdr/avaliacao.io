@@ -284,11 +284,112 @@ namespace Avaliacoes.Aplicacao.Services
             return new AppResponse(true, "Aluno avaliado com sucesso.");
         }
 
+        private string FormatarNota(int nota)
+        {
+            if (nota == 0)
+                return "Insuficiente";
+            else if (nota == 1)
+                return "Aptidão";
+            else 
+                return "Aptidão Plena";
+        }
+
         public async Task<AppResponse> ObterGradeCurricular(string id, string login)
         {
             Aluno aluno = await _uow.Usuarios.ObterAluno(id);
 
-            return new AppResponse(true, "");
+            if (aluno == null) return new AppResponse(false, "Aluno não encontrado.");
+
+            var disciplinasDTO = new List<DisciplinaAvaliadaDTO>();
+
+            foreach (var disciplina in aluno.Disciplinas)
+            {
+                var disciplinaDTO = new DisciplinaAvaliadaDTO { Nome = disciplina.Nome, DisciplinaId = disciplina.Id };
+                var competenciasDTO = new List<CompetenciaAvaliadaDTO>();
+
+                foreach (var competencia in disciplina.Competencias)
+                {
+                    var comptenciaDto = new CompetenciaAvaliadaDTO { Nome = competencia.Nome, CompentenciaId = competencia.Id };
+                    var habilidadesDTO = new List<HabilidadeAvaliadaDTO>();
+
+                    foreach (var habilidade in competencia.Habilidades)
+                    {
+                        var habilidadeDTO = new HabilidadeAvaliadaDTO
+                        {
+                            Nome = habilidade.Nome,
+                            HabilidadeId = habilidade.Id
+                        };
+
+                        var dimensoesDTo = new List<DimensaoAvaliadaDTO>();
+
+                        foreach (var dimensao in habilidade.Dimensoes)
+                        {
+                            var dimensoesAvaliadas = aluno.Avaliacoes.Where(e => e.DimensaoId == dimensao.Id)
+                                .Select(e => new DimensaoAvaliadaDTO { 
+                                    AvaliacaoId = e.Id, 
+                                    Nome = dimensao.Nome,
+                                    Nota = FormatarNota(e.Nota), 
+                                    Semestre = e.Semestre, 
+                                    DimensaoId = e.DimensaoId,
+                                    Data = e.DataAvaliacao.ToString("dd/MM/yyyy")
+                                }).OrderBy(e => e.Semestre).ToList();
+
+                            dimensoesDTo.AddRange(dimensoesAvaliadas);
+                        }
+
+                        habilidadeDTO.Dimensoes = dimensoesDTo;
+
+                        habilidadesDTO.Add(habilidadeDTO);
+                    }
+
+                    comptenciaDto.Habilidades = habilidadesDTO;
+
+                    competenciasDTO.Add(comptenciaDto);
+                }
+
+                disciplinaDTO.Competencias = competenciasDTO;
+
+                disciplinasDTO.Add(disciplinaDTO);
+            }
+
+            var gradeCurricular = new GradeCurricular
+            {
+                NomeAluno = aluno.Usuario.Nome,
+                Disciplinas = disciplinasDTO,
+                UsuarioId = aluno.UsuarioId
+            };
+            return new AppResponse(true, "Grade curricular obtidada com sucesso", gradeCurricular);
         }
+
+        public async Task<AppResponse> ObterNotas(string usuarioId, string name)
+        {
+            Aluno aluno = await _uow.Usuarios.ObterAluno(usuarioId);
+
+            if (aluno == null) return new AppResponse(false, "Aluno não encontrado.");
+
+            var avaliacoes = new List<AvaliacaoDTO>();
+
+            if (aluno.Avaliacoes.Count > 0)
+            {
+                avaliacoes = aluno.Avaliacoes.Select(e => new AvaliacaoDTO
+                {
+                    Nota = FormatarNota(e.Nota),
+                    Disciplina = e.Dimensao.Habilidade.Competencia.Disciplina.Nome,
+                    Competencia = e.Dimensao.Habilidade.Competencia.Nome,
+                    Habilidade = e.Dimensao.Habilidade.Nome,
+                    Dimensao = e.Dimensao.Nome,
+                    Semestre = e.Semestre,
+                    DisciplinaId = e.Dimensao.Habilidade.Competencia.DisciplinaId,
+                    CompetenciaId = e.Dimensao.Habilidade.CompetenciaId,
+                    HabilidadeId = e.Dimensao.Habilidade.Id,
+                    DimensaoId = e.DimensaoId,
+                    Data = e.DataAvaliacao.ToString("dd/MM/yyyy")
+
+                }).ToList();
+            }
+
+            return new AppResponse(true, "Notas obtidas com sucesso.", avaliacoes);
+        }
+
     }
 }

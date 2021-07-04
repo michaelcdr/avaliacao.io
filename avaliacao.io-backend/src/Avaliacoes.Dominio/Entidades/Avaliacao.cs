@@ -29,10 +29,11 @@ namespace Avaliacoes.Dominio.Entidades
             this.Semestre = semestre;
             this.DataAvaliacao = DateTime.Now;
         }
+
         /// <summary>
         /// Aptidão plena =	2
-        //        Aptidão =	1
-        //Insuficiente =	0
+        //  Aptidão =	    1
+        //  Insuficiente =	0
         /// </summary>
         /// <returns></returns>
         public override bool TaValido()

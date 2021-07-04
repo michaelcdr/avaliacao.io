@@ -101,7 +101,14 @@ namespace Avaliacoes.Infra.Repositorios.EF
                                      where r.Name == tipoUsuario && u.Id == usuarioId
                                      select u).Include(e => e.Professor).ThenInclude(e => e.Disciplinas)
                                               .Include(e => e.Aluno).ThenInclude(e => e.Disciplinas)
+                                              .Include(e => e.Aluno).ThenInclude(e => e.Disciplinas).ThenInclude(e=>e.Competencias)
+                                              .Include(e => e.Aluno).ThenInclude(e => e.Disciplinas)
+                                                                    .ThenInclude(e => e.Competencias).ThenInclude(e=>e.Habilidades)
+                                              .Include(e => e.Aluno).ThenInclude(e => e.Disciplinas)
+                                                                    .ThenInclude(e => e.Competencias)
+                                                                    .ThenInclude(e => e.Habilidades).ThenInclude(e=>e.Dimensoes)
                                               .Include(e => e.Coordenador)
+                                              .Include(e => e.Aluno).ThenInclude(a=>a.Avaliacoes)
                                               .SingleOrDefaultAsync();
 
             return usuario;
