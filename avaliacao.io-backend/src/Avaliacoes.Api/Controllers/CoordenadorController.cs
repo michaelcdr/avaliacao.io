@@ -5,6 +5,7 @@ using Avaliacoes.Dominio.Entidades;
 using Avaliacoes.Dominio.InputModels;
 using Avaliacoes.Dominio.Requests;
 using Avaliacoes.Dominio.Transacoes;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -13,7 +14,6 @@ using System.Threading.Tasks;
 
 namespace Avaliacoes.Api.Controllers
 {
-    //[Authorize]
     [Route("api/[controller]")]
     public class CoordenadorController : Controller
     {
@@ -27,6 +27,7 @@ namespace Avaliacoes.Api.Controllers
         }
 
         [HttpPost]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Professor, Coordenador")]
         public async Task<IActionResult> Post([FromBody] CriarCoordenadorRequest request)
         {
             AppResponse resposta = await _usuarioServico.CriarCoordenador(request);
@@ -37,6 +38,7 @@ namespace Avaliacoes.Api.Controllers
         }
 
         [HttpPut]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Professor, Coordenador")]
         public async Task<IActionResult> Put([FromBody] AtualizarCoordenadorRequest request)
         {
             AppResponse resposta = await _usuarioServico.AtualizarCoordenador(request);
@@ -47,6 +49,7 @@ namespace Avaliacoes.Api.Controllers
         }
 
         [HttpGet]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Get()
         {
             List<Coordenador> coordenadores = await _uow.Usuarios.ObterCoordenadores();
@@ -59,6 +62,7 @@ namespace Avaliacoes.Api.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Get(string id)
         {
             Coordenador coordenador = await _uow.Usuarios.ObterCoordenador(id);
@@ -71,6 +75,7 @@ namespace Avaliacoes.Api.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Delete(string id)
         {
             Usuario usuario = await _uow.Usuarios.Obter("Coordenador", id);

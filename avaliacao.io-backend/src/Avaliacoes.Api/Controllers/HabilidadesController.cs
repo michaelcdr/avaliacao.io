@@ -3,6 +3,7 @@ using Avaliacoes.Dominio.DTOs.Responses;
 using Avaliacoes.Dominio.Entidades;
 using Avaliacoes.Dominio.Requests;
 using Avaliacoes.Dominio.Transacoes;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -20,12 +21,14 @@ namespace Avaliacoes.Api.Controllers
         private readonly IUnitOfWork _uow;
         private string MSG_HABILIDADE_JAEXISTE = "Já existe uma habilidade com o nome informado.";
         private string MSG_ERRO = "Ops, algo deu errado.";
+
         public HabilidadesController(IUnitOfWork uow)
         {
             this._uow = uow;
         }
 
         [HttpGet]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Get()
         {
             IList<Habilidade> habilidades = await _uow.Habilidades.ObterTodasComDimensoes();
@@ -36,6 +39,7 @@ namespace Avaliacoes.Api.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult> Get(int id)
         {
             Habilidade habilidade = await _uow.Habilidades.ObterComDimensoes(id);
@@ -46,6 +50,7 @@ namespace Avaliacoes.Api.Controllers
         }
 
         [HttpGet("ObterTodasPorCompetencia/{idCompetencia}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> ObterTodasPorCompetencia(int idCompetencia)
         {
             IList<Habilidade> habilidades = await _uow.Habilidades.ObterTodasPorCompetencia(idCompetencia);
@@ -56,6 +61,7 @@ namespace Avaliacoes.Api.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Professor, Coordenador")]
         public async Task<IActionResult> Delete(int id)
         {
             Habilidade habilidade = await _uow.Habilidades.Get(id);
@@ -69,6 +75,7 @@ namespace Avaliacoes.Api.Controllers
         }
 
         [HttpPost]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Professor, Coordenador")]
         public async Task<ActionResult> Post([FromBody] HabilidadeRequest request)
         {
             var dimensoes = new List<Dimensao>() 
@@ -102,6 +109,7 @@ namespace Avaliacoes.Api.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Professor, Coordenador")]
         public async Task<IActionResult> Put(int id, [FromBody] HabilidadeRequest request)
         {
             Habilidade habilidade = await _uow.Habilidades.ObterComDimensoes(id);

@@ -4,6 +4,7 @@ using Avaliacoes.Dominio.DTOs.Responses;
 using Avaliacoes.Dominio.Entidades;
 using Avaliacoes.Dominio.Requests;
 using Avaliacoes.Dominio.Transacoes;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -25,6 +26,7 @@ namespace Avaliacoes.Api.Controllers
         }
 
         [HttpPost]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Professor, Coordenador")]
         public async Task<IActionResult> Post([FromBody] CriarAlunoRequest request)
         {
             AppResponse resposta = await _usuarioServico.CriarAluno(request);
@@ -35,6 +37,7 @@ namespace Avaliacoes.Api.Controllers
         }
 
         [HttpPut]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Professor, Coordenador")]
         public async Task<IActionResult> Put([FromBody] AtualizarAlunoRequest request)
         {
             AppResponse resposta = await _usuarioServico.AtualizarAluno(request);
@@ -45,6 +48,7 @@ namespace Avaliacoes.Api.Controllers
         }
 
         [HttpGet]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Professor, Coordenador")]
         public async Task<IActionResult> Get()
         {
             List<Aluno> alunos = await _uow.Usuarios.ObterAlunos();
@@ -57,6 +61,7 @@ namespace Avaliacoes.Api.Controllers
         }
 
         [HttpGet("ObterTodosPorDisciplina/{idDisciplina}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Professor, Coordenador")]
         public async Task<IActionResult> ObterTodosPorDisciplina(int idDisciplina)
         {
             List<Aluno> alunos = await _uow.Usuarios.ObterAlunosPorDisciplina(idDisciplina);
@@ -69,6 +74,7 @@ namespace Avaliacoes.Api.Controllers
         }
 
         [HttpPost("AdicionarEmDisciplinas")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Professor, Coordenador")]
         public async Task<IActionResult> AdicionarEmDisciplinas([FromBody] VincularAlunoDisciplinasRequest request)
         {
             AppResponse resposta = await _usuarioServico.VincularDisciplinasEmAluno(request);
@@ -79,6 +85,7 @@ namespace Avaliacoes.Api.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Professor, Coordenador")]
         public async Task<IActionResult> Delete(string id)
         {
             Usuario usuario = await _uow.Usuarios.Obter("Aluno", id);
@@ -91,12 +98,13 @@ namespace Avaliacoes.Api.Controllers
         }
 
         /// <summary>
-        /// Endpoint responsável por avaliar a dimensão de uma habilidade de um aluno, a nota deve ser de 0 a 10, 
+        /// Endpoint responsável por avaliar a dimensão de uma habilidade de um aluno, a nota deve ser de 0 a 2, 
         /// quando ja existir uma avaliação registrada para o mesmo semestre e aluno a mesma será atualizada. 
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
         [HttpPost("Avaliar")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Professor")]
         public async Task<IActionResult> Avaliar([FromBody] AvaliarAluno request)
         {
             AppResponse resposta = await _usuarioServico.AvaliarAluno(request);
@@ -106,7 +114,7 @@ namespace Avaliacoes.Api.Controllers
             return BadRequest(resposta);
         }
 
-        //[Authorize(Roles = "Professor")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet("ObterGradeCurricular/{usuarioId}")]
         public async Task<IActionResult> ObterGradeCurricular(string usuarioId)
         {
@@ -118,6 +126,7 @@ namespace Avaliacoes.Api.Controllers
         }
 
         [HttpGet("ObterNotas/{usuarioId}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> ObterNotas(string usuarioId)
         {
             AppResponse resposta = await _usuarioServico.ObterNotas(usuarioId, User.Identity.Name);

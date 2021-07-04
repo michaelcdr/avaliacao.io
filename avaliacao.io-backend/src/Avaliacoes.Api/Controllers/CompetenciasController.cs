@@ -3,6 +3,7 @@ using Avaliacoes.Dominio.DTOs.Responses;
 using Avaliacoes.Dominio.Entidades;
 using Avaliacoes.Dominio.Requests;
 using Avaliacoes.Dominio.Transacoes;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -27,6 +28,7 @@ namespace Avaliacoes.Api.Controllers
         }
 
         [HttpGet("ObterTodasPorDisciplina/{idDisciplina}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> ObterTodasPorDisciplina(int idDisciplina)
         {
             IList<Competencia> competencias = await _uow.Compentencias.ObterTodasPorDisciplina(idDisciplina);
@@ -37,6 +39,7 @@ namespace Avaliacoes.Api.Controllers
         }
 
         [HttpGet]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Get()
         {
             IList<Competencia> competencias = await _uow.Compentencias.ObterTodos();
@@ -47,6 +50,7 @@ namespace Avaliacoes.Api.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult> Get(int id)
         {
             Competencia competencia = await _uow.Compentencias.Get(id);
@@ -57,6 +61,7 @@ namespace Avaliacoes.Api.Controllers
         }
 
         [HttpPost]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Professor, Coordenador")]
         public async Task<ActionResult> Post([FromBody] CompetenciaRequest request)
         {
             var competencia = new Competencia(request.DisciplinaId, request.Nome, request.Descritivo);
@@ -83,6 +88,7 @@ namespace Avaliacoes.Api.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Professor, Coordenador")]
         public async Task<IActionResult> Put(int id, [FromBody] CompetenciaRequest request)
         {
             Competencia competencia = await _uow.Compentencias.Get(id);
@@ -110,6 +116,7 @@ namespace Avaliacoes.Api.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Professor, Coordenador")]
         public async Task<IActionResult> Delete(int id)
         {
             Competencia competencia = await _uow.Compentencias.Get(id);

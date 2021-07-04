@@ -24,6 +24,7 @@ namespace Avaliacoes.Api.Controllers
 
         /// <summary>
         /// Metódo responsável por retornar disciplinas.
+        /// Todos tipos de usuários podem consultar disciplinas.
         /// </summary>
         /// <returns></returns>
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
@@ -38,7 +39,8 @@ namespace Avaliacoes.Api.Controllers
         }
 
         /// <summary>
-        /// Metódo responsável por obter uma disciplina pelo Id.
+        /// Metódo responsável por obter uma disciplina pelo Id. 
+        /// Todos tipos de usuários podem consultar disciplinas.
         /// </summary>
         /// <param name="idDisciplina">Id da disciplina</param>
         /// <returns></returns>
@@ -55,6 +57,7 @@ namespace Avaliacoes.Api.Controllers
 
         /// <summary>
         /// Método responsável por criar uma nova disciplina.
+        /// Apenas Professores e Coordenadores conseguem fazer esse processo.
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
@@ -87,6 +90,7 @@ namespace Avaliacoes.Api.Controllers
 
         /// <summary>
         /// Método responsável por atualizar uma disciplina.
+        /// Apenas Professores e Coordenadores conseguem fazer esse processo.
         /// </summary>
         /// <param name="idDisciplina">Id da disciplina</param>
         /// <param name="disciplinaDTO">Objeto com dados da disciplina.</param>
@@ -116,6 +120,7 @@ namespace Avaliacoes.Api.Controllers
 
         /// <summary>
         /// Método responsável por remover uma disciplina, atenção todos dados vinculados a disciplina consequentemente serão removidos.
+        /// Apenas Professores e Coordenadores conseguem fazer esse processo.
         /// </summary>
         /// <param name="idDisciplina">Id da disciplina.</param>
         /// <returns></returns>

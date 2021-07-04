@@ -4,6 +4,7 @@ using Avaliacoes.Dominio.DTOs.Responses;
 using Avaliacoes.Dominio.Entidades;
 using Avaliacoes.Dominio.Requests;
 using Avaliacoes.Dominio.Transacoes;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -26,6 +27,7 @@ namespace Avaliacoes.Api.Controllers
         }
 
         [HttpGet]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Get()
         {
             List<Usuario> usuarios = await _uow.Usuarios.ObterProfessores();
@@ -38,6 +40,7 @@ namespace Avaliacoes.Api.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Get(string id)
         {
             Professor professor = await _uow.Usuarios.ObterProfessor(id);
@@ -50,6 +53,7 @@ namespace Avaliacoes.Api.Controllers
         }
 
         [HttpPost]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Professor, Coordenador")]
         public async Task<IActionResult> Post([FromBody] CriarProfessorRequest request)
         {
             AppResponse response = await _usuarioService.CriarProfessor(request);
@@ -60,6 +64,7 @@ namespace Avaliacoes.Api.Controllers
         }
 
         [HttpPut]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Professor, Coordenador")]
         public async Task<IActionResult> Put([FromBody] AtualizarProfessorRequest request)
         {
             AppResponse response = await _usuarioService.AtualizarProfessor(request);
@@ -70,6 +75,7 @@ namespace Avaliacoes.Api.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Professor, Coordenador")]
         public async Task<IActionResult> Delete(string id)
         {
             Usuario usuario = await _uow.Usuarios.Obter("Professor", id);
