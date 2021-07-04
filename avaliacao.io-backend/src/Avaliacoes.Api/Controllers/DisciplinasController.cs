@@ -10,8 +10,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 namespace Avaliacoes.Api.Controllers
-{
-    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+{   
     [Route("api/[controller]")]
     [ApiController]
     public class DisciplinasController : ControllerBase
@@ -27,6 +26,7 @@ namespace Avaliacoes.Api.Controllers
         /// Metódo responsável por retornar disciplinas.
         /// </summary>
         /// <returns></returns>
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet]
         public async Task<IActionResult> Get()
         {
@@ -42,6 +42,7 @@ namespace Avaliacoes.Api.Controllers
         /// </summary>
         /// <param name="idDisciplina">Id da disciplina</param>
         /// <returns></returns>
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet("{idDisciplina}")]
         public async Task<ActionResult> Get(int idDisciplina)
         {
@@ -58,6 +59,7 @@ namespace Avaliacoes.Api.Controllers
         /// <param name="request"></param>
         /// <returns></returns>
         [HttpPost]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Professor, Coordenador")]
         public async Task<ActionResult> Post([FromBody] DisciplinaRequest request)
         {
             var disciplina = new Disciplina(request.Nome, request.Descritivo, request.Horario);
@@ -90,6 +92,7 @@ namespace Avaliacoes.Api.Controllers
         /// <param name="disciplinaDTO">Objeto com dados da disciplina.</param>
         /// <returns></returns>
         [HttpPut("{idDisciplina}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Professor, Coordenador")]
         public async Task<IActionResult> Put(int idDisciplina, [FromBody] DisciplinaRequest disciplinaDTO)
         {
             Disciplina disciplina = await _uow.Disciplinas.ObterComProfessores(idDisciplina);
@@ -117,6 +120,7 @@ namespace Avaliacoes.Api.Controllers
         /// <param name="idDisciplina">Id da disciplina.</param>
         /// <returns></returns>
         [HttpDelete("{idDisciplina}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Professor, Coordenador")]
         public async Task<IActionResult> Delete(int idDisciplina)
         {
             Disciplina disciplina = await _uow.Disciplinas.ObterComProfessores(idDisciplina);

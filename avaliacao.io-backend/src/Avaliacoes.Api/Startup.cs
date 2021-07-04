@@ -1,3 +1,4 @@
+using Avaliacoes.Api.Configuration;
 using Avaliacoes.Aplicacao.Services;
 using Avaliacoes.Dominio.Entidades;
 using Avaliacoes.Dominio.Repositorios;
@@ -19,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Text;
 
 namespace Avaliacoes.Api
 {
@@ -34,80 +36,30 @@ namespace Avaliacoes.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddCors();
-            services.AddControllers();
+            services.Configure<JwtConfig>(Configuration.GetSection("JwtConfig"));
             
             string connStr = Configuration.GetConnectionString("ContextConnection");
-
-            //services.AddDbContext<ApplicationDbContext>(opt =>
-            //{
-            //    opt.UseSqlServer(connStr);
-            //});
 
             services.AddDbContextPool<ApplicationDbContext>(opt =>
             {
                 opt.UseMySql(connStr, ServerVersion.AutoDetect(connStr));
             });
 
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Avaliacoes.Api", Version = "v1", Description = "Documentação da API" });
-
-                var def = new OpenApiSecurityScheme()
-                {
-                    Scheme = "Bearer",
-                    BearerFormat = "JWT",
-                    Name = "Authorization",
-                    In = ParameterLocation.Header,
-                    Type = SecuritySchemeType.Http,
-                    Description = "Autenticação Bearer via JWT",
-                    Reference = new OpenApiReference
-                    {
-                        Id = JwtBearerDefaults.AuthenticationScheme,
-                        Type = ReferenceType.SecurityScheme
-                    }
-                };
-
-                c.AddSecurityDefinition(def.Reference.Id, def);
-
-                c.AddSecurityRequirement(new OpenApiSecurityRequirement() {
-                    {
-                        new OpenApiSecurityScheme
-                        { 
-                            Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" },
-                            Scheme = "oauth2",
-                            Name = "Bearer",
-                            In = ParameterLocation.Header
-                        },
-                        new List<string>()
-                    }
-                });
-
-                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-                c.IncludeXmlComments(xmlPath);
-            });
-
-            var tokenValidationParameters = new TokenValidationParameters
-            {
-                ValidateIssuer = true,
-                ValidateAudience = true,
-                ValidateLifetime = true,
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes("api-avaliacoes-security-key")),
-                ClockSkew = TimeSpan.FromMinutes(5),
-                ValidIssuer = "Avaliacoes.Api",
-                ValidAudience = "Postman"
-            };
-
             services.AddAuthentication(options => {
-                //options.DefaultScheme = "JwtBearer";
-                //options.DefaultChallengeScheme = "JwtBearer";
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer("JwtBearer", options => { 
-                options.TokenValidationParameters = tokenValidationParameters; 
+            }).AddJwtBearer(jwt => {
+                var key = Encoding.ASCII.GetBytes(Configuration["JwtConfig:Secret"]);
+                jwt.SaveToken = true;
+                jwt.TokenValidationParameters = new TokenValidationParameters {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ValidateLifetime = true,
+                    RequireExpirationTime = false
+                };
             });
 
             //não muda o nome do fucking cookie
@@ -128,12 +80,54 @@ namespace Avaliacoes.Api
                 options.Password.RequiredUniqueChars = 0;
                 options.User.RequireUniqueEmail = false;
                 options.Stores.MaxLengthForKeys = 85;
-            });  
+            });
 
             services.AddIdentity<Usuario, TipoUsuario>()
               .AddEntityFrameworkStores<ApplicationDbContext>()
               .AddRoleManager<RoleManager<TipoUsuario>>()
               .AddDefaultTokenProviders();
+
+            services.AddCors();
+            services.AddControllers();
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Avaliacoes.Api", Version = "v1", Description = "Documentação da API" });
+
+                var securityScheme = new OpenApiSecurityScheme()
+                {
+                    Scheme = "Bearer",
+                    BearerFormat = "JWT",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.Http,
+                    Description = "Autenticação Bearer via JWT",
+                    Reference = new OpenApiReference
+                    {
+                        Id = JwtBearerDefaults.AuthenticationScheme,
+                        Type = ReferenceType.SecurityScheme
+                    }
+                };
+
+                c.AddSecurityDefinition(securityScheme.Reference.Id, securityScheme);
+
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement() {
+                    {
+                        new OpenApiSecurityScheme
+                        { 
+                            Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" },
+                            Scheme = "oauth2",
+                            Name = "Bearer",
+                            In = ParameterLocation.Header
+                        },
+                        new List<string>()
+                    }
+                });
+
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
+            });
 
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddTransient<IDisciplinasRepositorio, DisciplinasRepositorio>();
@@ -145,11 +139,8 @@ namespace Avaliacoes.Api
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(
-            IApplicationBuilder app, 
-            IWebHostEnvironment env,
-            UserManager<Usuario> userManager,
-            RoleManager<TipoUsuario> roleManager, IUsuarioService usuarioService)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env,
+                              UserManager<Usuario> userManager, RoleManager<TipoUsuario> roleManager, IUsuarioService usuarioService)
         {
             if (env.IsDevelopment())
             {
@@ -159,14 +150,13 @@ namespace Avaliacoes.Api
             }
 
             app.UseHttpsRedirection();
-            app.UseRouting();
 
+            app.UseRouting();
             app.UseCors(x => x
              .AllowAnyMethod()
              .AllowAnyHeader()
              .SetIsOriginAllowed(origin => true)            
              .AllowCredentials());                          
-
             app.UseAuthentication();
             app.UseAuthorization();
 
