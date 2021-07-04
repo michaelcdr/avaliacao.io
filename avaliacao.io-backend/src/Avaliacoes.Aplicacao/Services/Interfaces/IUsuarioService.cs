@@ -15,5 +15,6 @@ namespace Avaliacoes.Aplicacao.Services
         Task<AppResponse> AtualizarAluno(AtualizarAlunoRequest request);
         Task<AppResponse> AtualizarCoordenador(AtualizarCoordenadorRequest request);
         Task<AppResponse> AvaliarAluno(AvaliarAluno request);
+        Task<AppResponse> ObterGradeCurricular(string id, string login);
     }
 }

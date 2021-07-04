@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Avaliacoes.Dominio", "src\A
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "avaliacao.io.mvc", "src\avaliacao.io.mvc\avaliacao.io.mvc.csproj", "{58114BDB-2A2B-4F20-928B-EFDB672334FB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avaliacoes.Aplicacao", "src\Avaliacoes.Aplicacao\Avaliacoes.Aplicacao.csproj", "{B689C0EA-6B1C-4F86-9E2F-C69094E1B0DF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Avaliacoes.Aplicacao", "src\Avaliacoes.Aplicacao\Avaliacoes.Aplicacao.csproj", "{B689C0EA-6B1C-4F86-9E2F-C69094E1B0DF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

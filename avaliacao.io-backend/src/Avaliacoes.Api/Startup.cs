@@ -5,6 +5,7 @@ using Avaliacoes.Dominio.Transacoes;
 using Avaliacoes.Infra.Data;
 using Avaliacoes.Infra.Repositorios.EF;
 using Avaliacoes.Infra.Transacoes;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -15,6 +16,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 
@@ -49,31 +51,71 @@ namespace Avaliacoes.Api
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Avaliacoes.Api", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Avaliacoes.Api", Version = "v1", Description = "Documentação da API" });
+
+                var def = new OpenApiSecurityScheme()
+                {
+                    Scheme = "Bearer",
+                    BearerFormat = "JWT",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.Http,
+                    Description = "Autenticação Bearer via JWT",
+                    Reference = new OpenApiReference
+                    {
+                        Id = JwtBearerDefaults.AuthenticationScheme,
+                        Type = ReferenceType.SecurityScheme
+                    }
+                };
+
+                c.AddSecurityDefinition(def.Reference.Id, def);
+
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement() {
+                    {
+                        new OpenApiSecurityScheme
+                        { 
+                            Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" },
+                            Scheme = "oauth2",
+                            Name = "Bearer",
+                            In = ParameterLocation.Header
+                        },
+                        new List<string>()
+                    }
+                });
 
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);
             });
 
-            services.AddAuthentication(options =>
+            var tokenValidationParameters = new TokenValidationParameters
             {
-                options.DefaultScheme = "JwtBearer";
-                options.DefaultChallengeScheme = "JwtBearer";
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes("api-avaliacoes-security-key")),
+                ClockSkew = TimeSpan.FromMinutes(5),
+                ValidIssuer = "Avaliacoes.Api",
+                ValidAudience = "Postman"
+            };
 
-            }).AddJwtBearer("JwtBearer", options => {
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes("api-avaliacoes-security-key")),
-                    ClockSkew = TimeSpan.FromMinutes(5),
-                    ValidIssuer = "Avaliacoes.Api",
-                    ValidAudience = "Postman"
-                };
+            services.AddAuthentication(options => {
+                //options.DefaultScheme = "JwtBearer";
+                //options.DefaultChallengeScheme = "JwtBearer";
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer("JwtBearer", options => { 
+                options.TokenValidationParameters = tokenValidationParameters; 
             });
+
+            //não muda o nome do fucking cookie
+            //.AddCookie(opt =>
+            // {
+            //     opt.Cookie.Name = "Teste Identity";
+            //     opt.Cookie.Expiration = TimeSpan.FromMinutes(0.4);
+            // });
 
             // definições de regras de segurança para a password
             services.Configure<IdentityOptions>(options =>
@@ -113,7 +155,7 @@ namespace Avaliacoes.Api
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Avaliacoes.Api v1"));
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "V1"));
             }
 
             app.UseHttpsRedirection();
@@ -122,8 +164,8 @@ namespace Avaliacoes.Api
             app.UseCors(x => x
              .AllowAnyMethod()
              .AllowAnyHeader()
-             .SetIsOriginAllowed(origin => true) // allow any origin
-             .AllowCredentials()); // allow credentials
+             .SetIsOriginAllowed(origin => true)            
+             .AllowCredentials());                          
 
             app.UseAuthentication();
             app.UseAuthorization();

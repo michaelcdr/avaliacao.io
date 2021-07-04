@@ -29,11 +29,16 @@ namespace Avaliacoes.Dominio.Entidades
             this.Semestre = semestre;
             this.DataAvaliacao = DateTime.Now;
         }
-
+        /// <summary>
+        /// Aptidão plena =	2
+        //        Aptidão =	1
+        //Insuficiente =	0
+        /// </summary>
+        /// <returns></returns>
         public override bool TaValido()
         {
-            if (Nota < 0 || Nota > 10)
-                AdicionarErro("A nota deve ser maior ou igual a 0 e menor ou igual a 10.", "Nota");
+            if (Nota < 0 || Nota > 2)
+                AdicionarErro("A nota deve ser maior ou igual a 0 e menor ou igual a 2.", "Nota");
 
             if (string.IsNullOrEmpty(Semestre))
                 AdicionarErro("O semestre deve ser informado.", "Nota");

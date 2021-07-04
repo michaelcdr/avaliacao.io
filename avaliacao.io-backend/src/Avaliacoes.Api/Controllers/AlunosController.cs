@@ -4,6 +4,7 @@ using Avaliacoes.Dominio.DTOs.Responses;
 using Avaliacoes.Dominio.Entidades;
 using Avaliacoes.Dominio.Requests;
 using Avaliacoes.Dominio.Transacoes;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
@@ -90,7 +91,8 @@ namespace Avaliacoes.Api.Controllers
         }
 
         /// <summary>
-        /// Endpoint responsavel por avaliar a dimensão de uma habilidade de um aluno, a nota deve ser de 0 a 10, quando ja existir uma avaliação registrada para o mesmo semestre e aluno a mesma será atualizada. 
+        /// Endpoint responsável por avaliar a dimensão de uma habilidade de um aluno, a nota deve ser de 0 a 10, 
+        /// quando ja existir uma avaliação registrada para o mesmo semestre e aluno a mesma será atualizada. 
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
@@ -98,6 +100,17 @@ namespace Avaliacoes.Api.Controllers
         public async Task<IActionResult> Avaliar([FromBody] AvaliarAluno request)
         {
             AppResponse resposta = await _usuarioServico.AvaliarAluno(request);
+
+            if (resposta.Sucesso) return Ok(resposta);
+
+            return BadRequest(resposta);
+        }
+
+        [Authorize(Roles = "Professor")]
+        [HttpGet("ObterGradeCurricular/{usuarioId}")]
+        public async Task<IActionResult> ObterGradeCurricular(string usuarioId)
+        {
+            AppResponse resposta = await _usuarioServico.ObterGradeCurricular(usuarioId, User.Identity.Name);
 
             if (resposta.Sucesso) return Ok(resposta);
 

@@ -283,5 +283,12 @@ namespace Avaliacoes.Aplicacao.Services
 
             return new AppResponse(true, "Aluno avaliado com sucesso.");
         }
+
+        public async Task<AppResponse> ObterGradeCurricular(string id, string login)
+        {
+            Aluno aluno = await _uow.Usuarios.ObterAluno(id);
+
+            return new AppResponse(true, "");
+        }
     }
 }
