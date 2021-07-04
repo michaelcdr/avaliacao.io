@@ -91,6 +91,10 @@ namespace Avaliacoes.Api.Controllers
             return jwtToken;
         }
 
+        /// <summary>
+        /// Desloga um usuário autenticado.
+        /// </summary>
+        /// <returns></returns>
         [HttpPost("Logout")]
         public async Task Logout()
         {

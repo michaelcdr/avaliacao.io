@@ -25,6 +25,11 @@ namespace Avaliacoes.Api.Controllers
             this._uow = uow;
         }
 
+        /// <summary>
+        /// Cadastra um novo aluno.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpPost]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Professor, Coordenador")]
         public async Task<IActionResult> Post([FromBody] CriarAlunoRequest request)
@@ -36,6 +41,11 @@ namespace Avaliacoes.Api.Controllers
             return BadRequest(resposta);
         }
 
+        /// <summary>
+        /// Atualiza um aluno especifico.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpPut]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Professor, Coordenador")]
         public async Task<IActionResult> Put([FromBody] AtualizarAlunoRequest request)
@@ -47,8 +57,12 @@ namespace Avaliacoes.Api.Controllers
             return BadRequest(resposta);
         }
 
+        /// <summary>
+        /// Obtem dados de um aluno.
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Professor, Coordenador")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Get()
         {
             List<Aluno> alunos = await _uow.Usuarios.ObterAlunos();
@@ -60,8 +74,13 @@ namespace Avaliacoes.Api.Controllers
             return Ok(alunosDto);
         }
 
+        /// <summary>
+        /// Obtem todos alunos de uma disciplina especifica.
+        /// </summary>
+        /// <param name="idDisciplina"></param>
+        /// <returns></returns>
         [HttpGet("ObterTodosPorDisciplina/{idDisciplina}")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Professor, Coordenador")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> ObterTodosPorDisciplina(int idDisciplina)
         {
             List<Aluno> alunos = await _uow.Usuarios.ObterAlunosPorDisciplina(idDisciplina);
@@ -73,6 +92,11 @@ namespace Avaliacoes.Api.Controllers
             return Ok(alunosDto);
         }
 
+        /// <summary>
+        /// Adicionar aluno em disciplina.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpPost("AdicionarEmDisciplinas")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Professor, Coordenador")]
         public async Task<IActionResult> AdicionarEmDisciplinas([FromBody] VincularAlunoDisciplinasRequest request)
@@ -84,6 +108,11 @@ namespace Avaliacoes.Api.Controllers
             return BadRequest(resposta);
         }
 
+        /// <summary>
+        /// Remove um aluno.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpDelete("{id}")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Professor, Coordenador")]
         public async Task<IActionResult> Delete(string id)
@@ -114,6 +143,11 @@ namespace Avaliacoes.Api.Controllers
             return BadRequest(resposta);
         }
 
+        /// <summary>
+        /// Obtem dados referente a grade curricular do aluno.
+        /// </summary>
+        /// <param name="usuarioId"></param>
+        /// <returns></returns>
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet("ObterGradeCurricular/{usuarioId}")]
         public async Task<IActionResult> ObterGradeCurricular(string usuarioId)
@@ -125,6 +159,11 @@ namespace Avaliacoes.Api.Controllers
             return BadRequest(resposta);
         }
 
+        /// <summary>
+        /// Obtem notas de um aluno, referente a cada habilidade e dimensão encontrada.
+        /// </summary>
+        /// <param name="usuarioId"></param>
+        /// <returns></returns>
         [HttpGet("ObterNotas/{usuarioId}")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> ObterNotas(string usuarioId)
