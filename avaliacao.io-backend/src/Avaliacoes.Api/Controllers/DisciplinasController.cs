@@ -61,8 +61,8 @@ namespace Avaliacoes.Api.Controllers
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        [HttpPost]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Professor, Coordenador")]
+        [HttpPost]
         public async Task<ActionResult> Post([FromBody] DisciplinaRequest request)
         {
             var disciplina = new Disciplina(request.Nome, request.Descritivo, request.Horario);

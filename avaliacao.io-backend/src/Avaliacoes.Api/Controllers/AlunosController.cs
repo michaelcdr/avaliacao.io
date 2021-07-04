@@ -26,7 +26,7 @@ namespace Avaliacoes.Api.Controllers
         }
 
         /// <summary>
-        /// Cadastra um novo aluno.
+        /// Cadastra um novo aluno, esse processo deve ser feito por um professor ou coordenador.
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
@@ -42,7 +42,7 @@ namespace Avaliacoes.Api.Controllers
         }
 
         /// <summary>
-        /// Atualiza um aluno especifico.
+        /// Atualiza um aluno especifico, esse processo deve ser feito por um professor ou coordenador.
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
@@ -93,7 +93,7 @@ namespace Avaliacoes.Api.Controllers
         }
 
         /// <summary>
-        /// Adicionar aluno em disciplina.
+        /// Adicionar aluno em disciplina, esse processo deve ser feito por um professor ou coordenador.
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
@@ -109,7 +109,7 @@ namespace Avaliacoes.Api.Controllers
         }
 
         /// <summary>
-        /// Remove um aluno.
+        /// Remove um aluno, esse processo deve ser feito por um professor ou coordenador.
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -128,7 +128,7 @@ namespace Avaliacoes.Api.Controllers
 
         /// <summary>
         /// Endpoint responsável por avaliar a dimensão de uma habilidade de um aluno, a nota deve ser de 0 a 2, 
-        /// quando ja existir uma avaliação registrada para o mesmo semestre e aluno a mesma será atualizada. 
+        /// quando ja existir uma avaliação registrada para o mesmo semestre e aluno a mesma será atualizada, esse processo deve ser feito por um professor.
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
