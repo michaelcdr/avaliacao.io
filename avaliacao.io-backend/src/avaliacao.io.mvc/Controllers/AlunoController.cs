@@ -16,6 +16,7 @@ namespace avaliacao.io.mvc.Controllers
         public AlunoController(ILogger<HomeController> logger, AlunoApiClient api)
         {
             _logger = logger;
+            _api = api;
         }
         
         public IActionResult Importar()

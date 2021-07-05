@@ -1,3 +1,4 @@
+using Avaliacoes.Aplicacao.Clients;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -25,6 +26,10 @@ namespace avaliacao.io.mvc
         {
             services.AddControllersWithViews();
             services.AddRazorPages().AddRazorRuntimeCompilation();
+            services.AddHttpClient<AlunoApiClient>(config =>
+            {
+                config.BaseAddress = new Uri("https://localhost:44311/api/");
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

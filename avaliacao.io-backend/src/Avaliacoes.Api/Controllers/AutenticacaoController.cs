@@ -60,6 +60,7 @@ namespace Avaliacoes.Api.Controllers
                     return Ok(new AppResponse(true, "Logado com sucesso. ", new
                     {
                         Token = tokenString,
+                        Id = usuarioEncontrado.Id,
                         UserName = usuarioEncontrado.UserName,
                         Nome = usuarioEncontrado.Nome,
                         Email = usuarioEncontrado.Email,

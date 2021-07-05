@@ -17,5 +17,6 @@ namespace Avaliacoes.Aplicacao.Services
         Task<AppResponse> AvaliarAluno(AvaliarAluno request);
         Task<AppResponse> ObterGradeCurricular(string id, string login);
         Task<AppResponse> ObterNotas(string usuarioId, string name);
+        Task<AppResponse> ImportarAlunos(ImportarAlunos importarAlunos);
     }
 }

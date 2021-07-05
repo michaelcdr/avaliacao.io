@@ -391,5 +391,9 @@ namespace Avaliacoes.Aplicacao.Services
             return new AppResponse(true, "Notas obtidas com sucesso.", avaliacoes);
         }
 
+        public Task<AppResponse> ImportarAlunos(ImportarAlunos importarAlunos)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }
