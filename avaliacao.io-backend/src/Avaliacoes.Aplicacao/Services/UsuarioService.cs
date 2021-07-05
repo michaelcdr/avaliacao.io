@@ -4,9 +4,17 @@ using Avaliacoes.Dominio.DTOs.Responses;
 using Avaliacoes.Dominio.Entidades;
 using Avaliacoes.Dominio.Requests;
 using Avaliacoes.Dominio.Transacoes;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
+using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
+using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Globalization;
+using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Avaliacoes.Aplicacao.Services
@@ -29,11 +37,13 @@ namespace Avaliacoes.Aplicacao.Services
         private const string MSG_ERRO_UPDATE_PROF = "Informações de professor atualizadas porem não foi possivel atualizar a senha.";
         private const string MSG_ERRO_PWD_COORDENADOR = "Informações de coordenador atualizadas porem não foi possivel atualizar a senha.";
         private readonly UserManager<Usuario> _userManager;
+        private readonly IHostingEnvironment _hostingEnvironment;
         private readonly IUnitOfWork _uow;
 
-        public UsuarioService(IUnitOfWork uow, UserManager<Usuario> userManager )
+        public UsuarioService(IUnitOfWork uow, UserManager<Usuario> userManager, IHostingEnvironment hostingEnvironment )
         {
             this._userManager = userManager;
+            this._hostingEnvironment = hostingEnvironment;
             this._uow = uow;
         }
 
@@ -46,12 +56,12 @@ namespace Avaliacoes.Aplicacao.Services
             IdentityResult result = await _userManager.CreateAsync(usuario, request.Senha);
 
             if (!result.Succeeded)
-                return new AppResponse(false, ERRO_CRIAR_ALUNO, IdentityHelper.ObterErros(result));
+                return new AppResponse(ERRO_CRIAR_ALUNO, false, IdentityHelper.ObterErros(result));
             else
             {
                 IdentityResult resultRole = await _userManager.AddToRoleAsync(usuario, ROLE_ALUNO);
 
-                if (!resultRole.Succeeded) return new AppResponse(false, ERRO_CRIAR_ALUNO, IdentityHelper.ObterErros(result));
+                if (!resultRole.Succeeded) return new AppResponse(ERRO_CRIAR_ALUNO, false, IdentityHelper.ObterErros(result));
 
                 usuario.Aluno = new Aluno { UsuarioId = usuario.Id, Matricula = request.Matricula };
                 await _uow.CommitAsync();
@@ -391,9 +401,70 @@ namespace Avaliacoes.Aplicacao.Services
             return new AppResponse(true, "Notas obtidas com sucesso.", avaliacoes);
         }
 
-        public Task<AppResponse> ImportarAlunos(ImportarAlunos importarAlunos)
+        public async Task<AppResponse> ImportarAlunos(ImportarAlunos importarAlunos)
         {
-            throw new System.NotImplementedException();
+            var erros = new List<string>();
+
+            if (importarAlunos.Arquivo.Length == 0)
+                return new AppResponse(false, "Arquivo não informado ou corrompido.");
+            else
+            {
+                // copiando arquivo...
+                var filePath = Path.GetTempFileName();
+                string destino = Path.Combine(_hostingEnvironment.WebRootPath ,"Importacoes", Guid.NewGuid() + ".xlsx");
+
+                using (var stream = new FileStream(destino, FileMode.Create))
+                    await importarAlunos.Arquivo.CopyToAsync(stream);
+
+                Thread.CurrentThread.CurrentCulture = new CultureInfo("pt-BR");
+                IWorkbook workbook = new XSSFWorkbook();
+                ISheet sheet;
+
+                using (var stream = new FileStream(destino, FileMode.Open))
+                {
+                    stream.Position = 0;
+                    XSSFWorkbook xssWorkbook = new XSSFWorkbook(stream);
+                    sheet = xssWorkbook.GetSheetAt(0);
+                }
+
+                int linha = 0;
+                var usuarios = new List<CriarAlunoRequest>();
+
+                foreach (IRow row in sheet)
+                {
+                    if (linha == 0) 
+                    { 
+                        linha++;
+                        continue;
+                    }
+                    
+                    string nome = row.GetCell(0).ToString();
+                    string login = row.GetCell(1).ToString();
+                    string email = row.GetCell(2).ToString();
+                    string matricula = row.GetCell(3).ToString();
+
+                    var usuario = new CriarAlunoRequest(nome, login, email, "123456", new List<int>()) { 
+                        Matricula = matricula 
+                    };                    
+                    
+                    usuarios.Add(usuario);
+
+                    linha++;
+                }
+
+                foreach (var criarAlunoRequest in usuarios)
+                {
+                    AppResponse resposta = await CriarAluno(criarAlunoRequest);
+                    
+                    if (!resposta.Sucesso)
+                        erros.Add(string.Join(",", resposta.Erros));
+                }
+            } 
+
+            if (erros.Count == 0)
+                return new AppResponse(true, "Importação realizada com sucesso.");
+            else
+                return new AppResponse(true, $"Importação realizada, porem ocorreram alguns erros:\n {string.Join("\n",erros)}");
         }
     }
 }

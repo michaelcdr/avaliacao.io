@@ -21,6 +21,16 @@
     <ProjectReference Include="..\Avaliacoes.Aplicacao\Avaliacoes.Aplicacao.csproj" />
     <ProjectReference Include="..\Avaliacoes.Infra\Avaliacoes.Infra.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\Importacoes\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="wwwroot\Importacoes\importacao-alunos.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
   <PropertyGroup>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);1591</NoWarn>

@@ -27,7 +27,7 @@ namespace Avaliacoes.Aplicacao.Clients
 
             content.Add(imagemBytes, BotarAspas("arquivo"), BotarAspas("excel-importacao.xlsx"));
 
-            HttpResponseMessage resposta = await httpClient.PostAsync("Aluno/Importar", content);
+            HttpResponseMessage resposta = await httpClient.PostAsync("Alunos/Importar", content);
 
             AppResponse conteudoResposta = await resposta.Content.ReadFromJsonAsync<AppResponse>();
 
