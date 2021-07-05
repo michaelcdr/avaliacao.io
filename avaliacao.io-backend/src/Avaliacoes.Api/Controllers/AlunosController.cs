@@ -75,6 +75,21 @@ namespace Avaliacoes.Api.Controllers
         }
 
         /// <summary>
+        /// Obtem dados de um aluno.
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("{usuarioId}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> Get(string usuarioId)
+        {
+            Aluno aluno = await _uow.Usuarios.ObterAluno(usuarioId);
+
+            if (aluno == null) return NotFound(new AppResponse(false, "aluno não encontrado"));
+
+            return Ok(new AlunoComDisciplinaDTO(aluno));
+        }
+
+        /// <summary>
         /// Obtem todos alunos de uma disciplina especifica.
         /// </summary>
         /// <param name="idDisciplina"></param>

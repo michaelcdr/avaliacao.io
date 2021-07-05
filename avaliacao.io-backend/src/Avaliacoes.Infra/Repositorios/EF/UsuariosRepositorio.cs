@@ -68,12 +68,18 @@ namespace Avaliacoes.Infra.Repositorios.EF
         public async Task<Professor> ObterProfessor(string id)
         {
             Usuario usuario = await Obter(ROLENAME_PROFESSOR, id);
+            
+            if (usuario == null) return null;
+
             return usuario.Professor;
         }
 
         public async Task<Coordenador> ObterCoordenador(string id)
         {
             Usuario usuario = await Obter(ROLENAME_COORDENADOR, id);
+            
+            if (usuario == null) return null;
+
             return usuario.Coordenador;
         }
 
@@ -117,6 +123,7 @@ namespace Avaliacoes.Infra.Repositorios.EF
         public async Task<Aluno> ObterAluno(string usuarioId)
         {
             Usuario usuario = await Obter(ROLENAME_ALUNO, usuarioId);
+            if (usuario == null) return null;
             return usuario.Aluno; 
         }
 

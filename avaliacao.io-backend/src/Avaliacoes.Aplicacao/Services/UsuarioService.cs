@@ -109,7 +109,7 @@ namespace Avaliacoes.Aplicacao.Services
                 usuario.Coordenador = new Coordenador { UsuarioId = usuario.Id };
                 await _uow.CommitAsync();
             }
-            return new AppResponse(true, MSG_CRIAR_COORDENADOR);
+            return new AppResponse(true, MSG_CRIAR_COORDENADOR, new CoordenadorDTO(usuario.Coordenador));
         }
 
         public async Task<AppResponse> CriarProfessor(CriarProfessorRequest request)
@@ -144,12 +144,14 @@ namespace Avaliacoes.Aplicacao.Services
 
                 await _uow.CommitAsync();
             }
-            return new AppResponse(true, MSG_SUCESSO);
+            return new AppResponse(true, MSG_SUCESSO, new ProfessorComDisciplinaDTO(usuario));
         }
 
         public async Task<AppResponse> AtualizarCoordenador(AtualizarCoordenadorRequest request)
         {
             Coordenador coordenador = await _uow.Usuarios.ObterCoordenador(request.Id);
+
+            if (coordenador == null) return new AppResponse(false, "Coordenador não encontrado.");
 
             if (string.IsNullOrEmpty(request.Senha)) coordenador.Usuario.AdicionarErro("Informe a nova senha.");
 
@@ -165,24 +167,22 @@ namespace Avaliacoes.Aplicacao.Services
             if (!result.Succeeded)
                 return new AppResponse(MSG_ERRO_PWD_COORDENADOR, false, IdentityHelper.ObterErros(result) );
 
-            return new AppResponse(true, MSG_UPDATE_SUCESSO);
+            return new AppResponse(true, MSG_UPDATE_SUCESSO, new CoordenadorDTO(coordenador));
         }
 
         public async Task<AppResponse> AtualizarProfessor(AtualizarProfessorRequest request)
         {
             Professor professor = await _uow.Usuarios.ObterProfessor(request.Id);
 
-            if (string.IsNullOrEmpty(request.Senha))
-                professor.Usuario.AdicionarErro("Informe a nova senha.");
+            if (professor == null) return new AppResponse(false, "Professor não encontrado.");
 
-            if (string.IsNullOrEmpty(request.SenhaAntiga))
-                professor.Usuario.AdicionarErro("Informe a senha antiga.");
+            if (string.IsNullOrEmpty(request.Senha)) professor.Usuario.AdicionarErro("Informe a nova senha.");
+
+            if (string.IsNullOrEmpty(request.SenhaAntiga)) professor.Usuario.AdicionarErro("Informe a senha antiga.");
 
             if (!professor.Usuario.TaValido()) return new AppResponse(false, ERRO_BASE, professor.Usuario.ObterErros());
 
-            professor.Usuario.Nome = request.Nome;
-            professor.Usuario.Email = request.Email;
-            professor.Usuario.UserName = request.UserName;
+            professor.Atualizar(request.Nome, request.Email, request.UserName);
 
             // vinculando disciplinas no professor
             if (request.Disciplinas != null)
@@ -194,9 +194,7 @@ namespace Avaliacoes.Aplicacao.Services
                     foreach (Disciplina disciplinaInformada in disciplinasInformadas)
                     {
                         if (!professor.Disciplinas.Any(e => e.Id == disciplinaInformada.Id))
-                        {
                             disciplinaInformada.AdicionarProfessor(professor);
-                        }
                     }
 
                     var idsRemover = professor.Disciplinas.Select(e => e.Id).ToList().Except(request.Disciplinas).ToList();
@@ -204,9 +202,7 @@ namespace Avaliacoes.Aplicacao.Services
                     List<Disciplina> disciplinasRemover = professor.Disciplinas.Where(e => idsRemover.Contains(e.Id)).ToList();
 
                     foreach (var disciplinaInformada in disciplinasRemover)
-                    {
                         disciplinaInformada.RemoverProfessor(professor);
-                    }
                 }
             }
 
@@ -217,18 +213,18 @@ namespace Avaliacoes.Aplicacao.Services
             if (!result.Succeeded)
                 return new AppResponse(MSG_ERRO_UPDATE_PROF, false, IdentityHelper.ObterErros(result));
 
-            return new AppResponse(true, MSG_UPDATE_SUCESSO);
+            return new AppResponse(true, MSG_UPDATE_SUCESSO, new ProfessorComDisciplinaDTO(professor.Usuario));
         }
         
         public async Task<AppResponse> AtualizarAluno(AtualizarAlunoRequest request)
         {
             Aluno aluno = await _uow.Usuarios.ObterAluno(request.Id);
 
-            if (string.IsNullOrEmpty(request.Senha))
-                aluno.Usuario.AdicionarErro("Informe a nova senha.");
+            if (aluno == null) return new AppResponse(false, "Aluno não encontrado.");
+
+            if (string.IsNullOrEmpty(request.Senha)) aluno.Usuario.AdicionarErro("Informe a nova senha.");
             
-            if (string.IsNullOrEmpty(request.SenhaAntiga))
-                aluno.Usuario.AdicionarErro("Informe a senha antiga.");
+            if (string.IsNullOrEmpty(request.SenhaAntiga)) aluno.Usuario.AdicionarErro("Informe a senha antiga.");
 
             aluno.Atualizar(request);
 
