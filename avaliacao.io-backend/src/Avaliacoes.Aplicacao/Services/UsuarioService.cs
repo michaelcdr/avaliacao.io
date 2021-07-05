@@ -290,15 +290,6 @@ namespace Avaliacoes.Aplicacao.Services
             return new AppResponse(true, "Aluno avaliado com sucesso.");
         }
 
-        private string FormatarNota(int nota)
-        {
-            if (nota == 0)
-                return "Insuficiente";
-            else if (nota == 1)
-                return "Aptidão";
-            else 
-                return "Aptidão Plena";
-        }
 
         public async Task<AppResponse> ObterGradeCurricular(string id, string login)
         {
@@ -334,7 +325,7 @@ namespace Avaliacoes.Aplicacao.Services
                                 .Select(e => new DimensaoAvaliadaDTO { 
                                     AvaliacaoId = e.Id, 
                                     Nome = dimensao.Nome,
-                                    Nota = FormatarNota(e.Nota), 
+                                    Nota = e.ObterNotaFormatada(), 
                                     Semestre = e.Semestre, 
                                     DimensaoId = e.DimensaoId,
                                     Data = e.DataAvaliacao.ToString("dd/MM/yyyy")
@@ -367,7 +358,21 @@ namespace Avaliacoes.Aplicacao.Services
             return new AppResponse(true, "Grade curricular obtidada com sucesso", gradeCurricular);
         }
 
-        public async Task<AppResponse> ObterNotas(string usuarioId, string name)
+        public async Task<AppResponse> ObterNotas(string usuarioId)
+        {
+            Aluno aluno = await _uow.Usuarios.ObterAluno(usuarioId);
+
+            if (aluno == null) return new AppResponse(false, "Aluno não encontrado.");
+
+            var avaliacoes = new List<AvaliacaoDTO>();
+
+            if (aluno.Avaliacoes.Count > 0)
+                avaliacoes = aluno.Avaliacoes.Select(e => new AvaliacaoDTO(e)).ToList();
+
+            return new AppResponse(true, "Notas obtidas com sucesso.", avaliacoes);
+        }
+
+        public async Task<AppResponse> ObterNotas(string usuarioId, int disciplinaId)
         {
             Aluno aluno = await _uow.Usuarios.ObterAluno(usuarioId);
 
@@ -377,21 +382,12 @@ namespace Avaliacoes.Aplicacao.Services
 
             if (aluno.Avaliacoes.Count > 0)
             {
-                avaliacoes = aluno.Avaliacoes.Select(e => new AvaliacaoDTO
-                {
-                    Nota = FormatarNota(e.Nota),
-                    Disciplina = e.Dimensao.Habilidade.Competencia.Disciplina.Nome,
-                    Competencia = e.Dimensao.Habilidade.Competencia.Nome,
-                    Habilidade = e.Dimensao.Habilidade.Nome,
-                    Dimensao = e.Dimensao.Nome,
-                    Semestre = e.Semestre,
-                    DisciplinaId = e.Dimensao.Habilidade.Competencia.DisciplinaId,
-                    CompetenciaId = e.Dimensao.Habilidade.CompetenciaId,
-                    HabilidadeId = e.Dimensao.Habilidade.Id,
-                    DimensaoId = e.DimensaoId,
-                    Data = e.DataAvaliacao.ToString("dd/MM/yyyy")
+                var avaliacoesDisciplinas = aluno.Avaliacoes.Where(e => e.Dimensao.Habilidade.Competencia.DisciplinaId == disciplinaId).ToList();
 
-                }).ToList();
+                if (avaliacoesDisciplinas != null && avaliacoesDisciplinas.Count> 0)
+                {
+                    avaliacoes = avaliacoesDisciplinas.Select(e => new AvaliacaoDTO(e)).ToList();
+                }
             }
 
             return new AppResponse(true, "Notas obtidas com sucesso.", avaliacoes);

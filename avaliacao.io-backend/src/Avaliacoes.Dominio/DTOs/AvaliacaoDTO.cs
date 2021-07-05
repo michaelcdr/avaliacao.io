@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Avaliacoes.Dominio.Entidades;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,5 +20,27 @@ namespace Avaliacoes.Dominio.DTOs
         public int CompetenciaId { get; set; }
         public int HabilidadeId { get; set; }
         public int DimensaoId { get; set; }
+
+        public AvaliacaoDTO()
+        {
+
+        }
+
+        public AvaliacaoDTO(Avaliacao e)
+        {
+            Nota =  e.ObterNotaFormatada();
+            Disciplina = e.Dimensao.Habilidade.Competencia.Disciplina.Nome;
+            Competencia = e.Dimensao.Habilidade.Competencia.Nome;
+            Habilidade = e.Dimensao.Habilidade.Nome;
+            Dimensao = e.Dimensao.Nome;
+            Semestre = e.Semestre;
+            DisciplinaId = e.Dimensao.Habilidade.Competencia.DisciplinaId;
+            CompetenciaId = e.Dimensao.Habilidade.CompetenciaId;
+            HabilidadeId = e.Dimensao.Habilidade.Id;
+            DimensaoId = e.DimensaoId;
+            Data = e.DataAvaliacao.ToString("dd/MM/yyyy");
+        }
+
+
     }
 }

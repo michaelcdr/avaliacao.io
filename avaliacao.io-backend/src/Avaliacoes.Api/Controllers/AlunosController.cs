@@ -183,7 +183,23 @@ namespace Avaliacoes.Api.Controllers
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> ObterNotas(string usuarioId)
         {
-            AppResponse resposta = await _usuarioServico.ObterNotas(usuarioId, User.Identity.Name);
+            AppResponse resposta = await _usuarioServico.ObterNotas(usuarioId);
+
+            if (resposta.Sucesso) return Ok(resposta);
+
+            return BadRequest(resposta);
+        }
+
+        /// <summary>
+        /// Obtem notas de um aluno, referente a cada habilidade e dimensão encontrada.
+        /// </summary>
+        /// <param name="usuarioId"></param>
+        /// <returns></returns>
+        [HttpGet("ObterNotas/{usuarioId}/{disciplinaId}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> ObterNotas(string usuarioId, int disciplinaId)
+        {
+            AppResponse resposta = await _usuarioServico.ObterNotas(usuarioId, disciplinaId);
 
             if (resposta.Sucesso) return Ok(resposta);
 

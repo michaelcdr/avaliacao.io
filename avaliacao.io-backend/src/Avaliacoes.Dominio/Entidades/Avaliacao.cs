@@ -51,5 +51,17 @@ namespace Avaliacoes.Dominio.Entidades
         {
             this.Nota = nota;
         }
+
+        public string ObterNotaFormatada()
+        {
+             
+            if (Nota == 0)
+                return "Insuficiente";
+            else if (Nota == 1)
+                return "Aptidão";
+            else
+                return "Aptidão Plena";
+            
+        }
     }
 }
