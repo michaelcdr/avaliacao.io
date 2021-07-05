@@ -50,13 +50,21 @@ namespace Avaliacoes.Api.Controllers
                 if (usuarioEncontrado == null) return BadRequest(new AppResponse(false, "Usuário não encontrado."));
 
                 var result = await _signInManager.CheckPasswordSignInAsync(usuarioEncontrado,   model.Password, false);
+                var roles = await _userManager.GetRolesAsync(usuarioEncontrado);
 
                 if (!result.Succeeded)
                     return BadRequest(new AppResponse(false, "Não foi possível gerar o token."));
                 else
                 {
                     string tokenString = await CriarToken(model, usuarioEncontrado);
-                    return Ok(tokenString);
+                    return Ok(new AppResponse(true, "Logado com sucesso. ", new
+                    {
+                        Token = tokenString,
+                        UserName = usuarioEncontrado.UserName,
+                        Nome = usuarioEncontrado.Nome,
+                        Email = usuarioEncontrado.Email,
+                        Tipo = roles.First()
+                    }));
                 }
             }
             return BadRequest(new AppResponse(false, "Não foi possível gerar o token."));
