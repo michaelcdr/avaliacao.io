@@ -115,6 +115,8 @@ namespace Avaliacoes.Infra.Repositorios.EF
                                                                     .ThenInclude(e => e.Habilidades).ThenInclude(e=>e.Dimensoes)
                                               .Include(e => e.Coordenador)
                                               .Include(e => e.Aluno).ThenInclude(a=>a.Avaliacoes)
+                                              .Include(e => e.Aluno).ThenInclude(a => a.Avaliacoes).ThenInclude(e=>e.Dimensao).ThenInclude(e=>e.Habilidade)
+                                                                    .ThenInclude(e=>e.Competencia).ThenInclude(e=>e.Disciplina)
                                               .SingleOrDefaultAsync();
 
             return usuario;
