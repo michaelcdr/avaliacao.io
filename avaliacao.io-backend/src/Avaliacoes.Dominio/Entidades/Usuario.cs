@@ -27,29 +27,18 @@ namespace Avaliacoes.Dominio.Entidades
 
         public bool TaValido()
         {
-            bool retorno = true;
-            
-            this._erros = new List<string>();
+            this._erros = this._erros == null ? new List<string>() : this._erros;
 
             if (string.IsNullOrEmpty(Nome))
-            {
                 _erros.Add("Nome não informado.");
-                retorno = false;
-            }
 
             if (string.IsNullOrEmpty(UserName))
-            {
                 _erros.Add("UserName não informado.");
-                retorno = false;
-            }
 
             if (string.IsNullOrEmpty(Email))
-            {
                 _erros.Add("E-mail não informado.");
-                retorno = false;
-            }
 
-            return retorno;
+            return this._erros.Count == 0;
         }
 
         public List<string> ObterErros()
@@ -59,6 +48,9 @@ namespace Avaliacoes.Dominio.Entidades
 
         public void AdicionarErro(string erro)
         {
+            if (this._erros == null)
+                this._erros = new List<string>();
+
             this._erros.Add(erro);
         }
     }
