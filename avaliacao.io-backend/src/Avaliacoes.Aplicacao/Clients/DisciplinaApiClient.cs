@@ -7,18 +7,18 @@ using System.Threading.Tasks;
 
 namespace Avaliacoes.Aplicacao.Clients
 {
-    public class AlunoApiClient
+    public class DisciplinaApiClient
     {
         private readonly HttpClient httpClient;
 
-        public AlunoApiClient(HttpClient httpClient)
+        public DisciplinaApiClient(HttpClient httpClient)
         {
             this.httpClient = httpClient;
         }
 
         private string BotarAspas(string valor) => $"\"{valor}\"";
 
-        public async Task<AppResponse> Importar(ImportarAlunos request)
+        public async Task<AppResponse> Importar(ImportarDisciplinas request)
         {
             var content = new MultipartFormDataContent();
 

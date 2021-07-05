@@ -3,7 +3,7 @@
     ViewData["Title"] = "Importação";
     Layout = "~/Views/Shared/_Layout.cshtml";
 } 
-<h1>Aluno » <small>Importação</small></h1>
+<h1>Disciplina » <small>Importação</small></h1>
 
 <hr />
 
@@ -12,14 +12,13 @@
     <div class="row">
         <div class="col-md-12">
             <fieldset>
-                <legend>Selecione o arquivo de importação com os dados dos alunos:</legend>
+                <legend>Selecione o arquivo de importação com os dados das disciplinas:</legend>
                 <label class="btn btn-outline-dark">
                     Selecionar arquivo
-                    <input id="Arquivo" name="Arquivo" type="file"  class="d-none" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />
+                    <input id="Arquivo" name="Arquivo" type="file" class="d-none" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />
                 </label>
-                <div id="arquivo-container">
-                </div>
-                @if(ViewBag.Retorno != null) 
+                <div id="arquivo-container"></div>
+                @if (ViewBag.Retorno != null)
                 {
                     <div class="alert alert-success">@ViewBag.Retorno</div>
                 }

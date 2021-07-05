@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 
 namespace avaliacao.io.mvc.Controllers
 {
-    public class AlunoController : Controller
+    public class DisciplinaController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-        private readonly AlunoApiClient _api;
+        private readonly ILogger<DisciplinaController> _logger;
+        private readonly DisciplinaApiClient _api;
 
-        public AlunoController(ILogger<HomeController> logger, AlunoApiClient api)
+        public DisciplinaController(ILogger<DisciplinaController> logger, DisciplinaApiClient api)
         {
             _logger = logger;
             _api = api;
@@ -33,15 +33,14 @@ namespace avaliacao.io.mvc.Controllers
                     ModelState.AddModelError("Arquivo", "Selecione o arquivo.");
                 else
                 {
-                    await _api.Importar(new ImportarAlunos() { Arquivo = Arquivo });
+                    await _api.Importar(new ImportarDisciplinas() { Arquivo = Arquivo });
                     ViewBag.Retorno = "Importação finalizada com sucesso.";
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 ModelState.AddModelError("Arquivo", "Não foi possivel uplodear o arquivo.");
             }
-            
             return View();
         }
     }

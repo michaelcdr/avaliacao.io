@@ -1,4 +1,6 @@
-﻿using Avaliacoes.Dominio.DTOs;
+﻿using Avaliacoes.Aplicacao.Services.Interfaces;
+using Avaliacoes.Dominio.DTOs;
+using Avaliacoes.Dominio.DTOs.Responses;
 using Avaliacoes.Dominio.Entidades;
 using Avaliacoes.Dominio.Requests;
 using Avaliacoes.Dominio.Transacoes;
@@ -16,10 +18,11 @@ namespace Avaliacoes.Api.Controllers
     public class DisciplinasController : ControllerBase
     {
         private readonly IUnitOfWork _uow;
-
-        public DisciplinasController(IUnitOfWork uow)
+        private readonly IDisciplinaService _disciplinaService;
+        public DisciplinasController(IUnitOfWork uow, IDisciplinaService disciplinaService)
         {
             this._uow = uow;
+            this._disciplinaService = disciplinaService;
         }
 
         /// <summary>
@@ -135,6 +138,17 @@ namespace Avaliacoes.Api.Controllers
             _uow.Disciplinas.Delete(disciplina);
             await _uow.CommitAsync();
             return NoContent();
+        }
+
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Professor")]
+        [HttpPost("Importar")]
+        public async Task<IActionResult> Importar([FromForm]ImportarDisciplinas importarDisciplinas)
+        {
+            AppResponse resposta = await _disciplinaService.ImportarDisciplinas(importarDisciplinas);
+
+            if (resposta.Sucesso) return Ok(resposta);
+
+            return BadRequest(resposta);
         }
     }
 }

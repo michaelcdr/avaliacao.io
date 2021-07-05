@@ -1,5 +1,6 @@
 using Avaliacoes.Api.Configuration;
 using Avaliacoes.Aplicacao.Services;
+using Avaliacoes.Aplicacao.Services.Interfaces;
 using Avaliacoes.Dominio.Entidades;
 using Avaliacoes.Dominio.Repositorios;
 using Avaliacoes.Dominio.Transacoes;
@@ -136,6 +137,8 @@ namespace Avaliacoes.Api
             services.AddTransient<IHabilidadesRepositorio, HabilidadesRepositorio>();
             services.AddTransient<IDimensoesRepositorio, DimensoesRepositorio>();
             services.AddTransient<IUsuarioService, UsuarioService>();
+            services.AddTransient<IDisciplinaService, DisciplinaService>();
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

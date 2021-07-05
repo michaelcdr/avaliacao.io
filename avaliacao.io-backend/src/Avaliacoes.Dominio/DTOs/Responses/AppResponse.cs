@@ -8,6 +8,10 @@ namespace Avaliacoes.Dominio.DTOs.Responses
         public bool Sucesso { get; private set; }
         public string Mensagem { get; private set; }
         public object Dados { get; private set; }
+        public AppResponse()
+        {
+
+        }
         public AppResponse(string mensagem, bool sucesso,  List<string> erros)
         {
             this.Sucesso = sucesso;

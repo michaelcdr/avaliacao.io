@@ -26,10 +26,11 @@ namespace avaliacao.io.mvc
         {
             services.AddControllersWithViews();
             services.AddRazorPages().AddRazorRuntimeCompilation();
-            services.AddHttpClient<AlunoApiClient>(config =>
-            {
-                config.BaseAddress = new Uri("https://localhost:44311/api/");
-            });
+
+            Uri apiUri = new Uri("https://localhost:44311/api/");
+            services.AddHttpClient<AlunoApiClient>(config => { config.BaseAddress = apiUri; });
+            services.AddHttpClient<DisciplinaApiClient>(config => { config.BaseAddress = apiUri; });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

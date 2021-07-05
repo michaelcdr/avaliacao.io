@@ -177,7 +177,7 @@ namespace Avaliacoes.Api.Controllers
 
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Professor")]
         [HttpPost("Importar")]
-        public async Task<IActionResult> Importar(ImportarAlunos importarAlunos)
+        public async Task<IActionResult> Importar([FromForm] ImportarAlunos importarAlunos)
         {
             AppResponse resposta = await _usuarioServico.ImportarAlunos(importarAlunos);
 
