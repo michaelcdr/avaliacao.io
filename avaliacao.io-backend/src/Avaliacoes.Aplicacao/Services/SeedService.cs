@@ -73,16 +73,16 @@ namespace Avaliacoes.Aplicacao.Services
             //alunos
 
             if (!alunos.Any(e=> e.UserName == "michael.aluno"))
-                await _usuarioService.CriarAluno(new CriarAlunoRequest("Michael", "michael.aluno", "michaelcdr@hotmail.com", "123456", new List<int>()));
+                await _usuarioService.CriarAluno(new CriarAlunoRequest("Michael", "michael.aluno", "michaelcdr@hotmail.com", "123456", new List<int>()) { Matricula = "123" });
 
             if (!alunos.Any(e => e.UserName == "bruno.aluno"))
-                await _usuarioService.CriarAluno(new CriarAlunoRequest("Bruno", "bruno.aluno", "bruno@hotmail.com", "123456", new List<int>()));
+                await _usuarioService.CriarAluno(new CriarAlunoRequest("Bruno", "bruno.aluno", "bruno@hotmail.com", "123456", new List<int>()) { Matricula = "123" });
 
             if (!alunos.Any(e => e.UserName == "taciano.aluno"))
-                await _usuarioService.CriarAluno(new CriarAlunoRequest("Taciano", "taciano.aluno", "taciano@hotmail.com", "123456", new List<int>()));
+                await _usuarioService.CriarAluno(new CriarAlunoRequest("Taciano", "taciano.aluno", "taciano@hotmail.com", "123456", new List<int>()) { Matricula = "123" });
 
             if (!alunos.Any(e => e.UserName == "pedro.aluno"))
-                await _usuarioService.CriarAluno(new CriarAlunoRequest("Pedro", "pedro.aluno", "pedro@hotmail.com", "123456", new List<int>()));
+                await _usuarioService.CriarAluno(new CriarAlunoRequest("Pedro", "pedro.aluno", "pedro@hotmail.com", "123456", new List<int>()) { Matricula = "123" });
         }
 
         private async Task CriarTipoDeUsuarioCoordenadorSeNaoExiste()
