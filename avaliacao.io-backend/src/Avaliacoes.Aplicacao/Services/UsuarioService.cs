@@ -458,5 +458,33 @@ namespace Avaliacoes.Aplicacao.Services
             else
                 return new AppResponse(true, $"Importação realizada, porem ocorreram alguns erros:\n {string.Join("\n",erros)}");
         }
+
+        public async Task<AppResponse> ObterNotasDaHabilidade(string usuarioId, int habilidadeId)
+        {
+            Aluno aluno = await _uow.Usuarios.ObterAluno(usuarioId);
+            Habilidade habilidade = await _uow.Habilidades.Get(habilidadeId);
+
+            if (aluno == null) return new AppResponse(false, "Aluno não encontrado.");
+            if (habilidade == null) return new AppResponse(false, "Habilidade não encontrada.");
+
+
+            var habilidadesComNota = new HabilidadeComNotasDTO();
+            var notas = new List<NotasDTO>();
+
+            if (aluno.Avaliacoes.Count > 0)
+            {
+                var avaliacoesDisciplinas = aluno.Avaliacoes.Where(e => e.Dimensao.Habilidade.Id == habilidadeId).ToList();
+                
+                habilidadesComNota.Nome = habilidade.Nome;
+
+                if (avaliacoesDisciplinas != null && avaliacoesDisciplinas.Count > 0) 
+                    notas = avaliacoesDisciplinas.Select(e => new NotasDTO { Dimensao = e.Dimensao.Nome, DimensaoId = e.DimensaoId, Nota = e.ObterNotaFormatada() })
+                                                 .ToList();
+            }
+            habilidadesComNota.NotasDTO = notas;
+            habilidadesComNota.HabilidadeId = habilidadeId;
+
+            return new AppResponse(true, "Notas obtidas com sucesso.", habilidadesComNota);
+        }
     }
 }

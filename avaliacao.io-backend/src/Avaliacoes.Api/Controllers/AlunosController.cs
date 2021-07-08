@@ -206,6 +206,17 @@ namespace Avaliacoes.Api.Controllers
             return BadRequest(resposta);
         }
 
+        [HttpGet("ObterNotasDaHabilidade/{usuarioId}/{habilidadeId}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> ObterNotasDaHabilidade(string usuarioId, int habilidadeId)
+        {
+            AppResponse resposta = await _usuarioServico.ObterNotasDaHabilidade(usuarioId, habilidadeId);
+
+            if (resposta.Sucesso) return Ok(resposta);
+
+            return BadRequest(resposta);
+        }
+
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Professor")]
         [HttpPost("Importar")]
         public async Task<IActionResult> Importar([FromForm] ImportarAlunos importarAlunos)

@@ -18,5 +18,6 @@ namespace Avaliacoes.Aplicacao.Services
         Task<AppResponse> ObterNotas(string usuarioId);
         Task<AppResponse> ImportarAlunos(ImportarAlunos importarAlunos);
         Task<AppResponse> ObterNotas(string usuarioId, int disciplinaId);
+        Task<AppResponse> ObterNotasDaHabilidade(string usuarioId, int habilidadeId);
     }
 }
